@@ -130,6 +130,26 @@ class Category(ArticleFeed, ContentFeed):
         return models.Article.public.language(language).filter(categories=category)
 
 
+class Tag(ArticleFeed, ContentFeed):
+    def get_object(self, request, slug, language):
+        translation.activate(language or 'ru')
+        tag = get_object_or_404(models.Tag, slug=slug)
+        return tag, language
+
+    def title(self, (tag, language)):
+        tag = models.Translation(tag, language)
+        return u'%s » %s' % (settings.MARCUS_TITLE, tag.title())
+
+    def link(self, (tag, language)):
+        return utils.iurl(reverse('marcus-tag', args=[tag.slug]), language)
+
+    def hub_link(self, obj):
+        return reverse('subhub-hub')
+
+    def get_query_set(self, tag, language):
+        return models.Article.public.language(language).filter(tags=tag)
+
+
 class CommentFeed(object):
     title_template = 'marcus/feeds/comment_title.html'
     description_template = 'marcus/feeds/comment_summary.html'

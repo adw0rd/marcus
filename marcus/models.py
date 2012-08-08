@@ -96,8 +96,14 @@ class Tag(models.Model):
     title_en = models.CharField(max_length=255, blank=True)
     description_en = models.TextField(blank=True)
 
+    objects = managers.TagManager()
+
     def __unicode__(self):
         return self.title()
+
+    def get_absolute_url(self, language=None):
+        return utils.iurl(reverse('marcus-tag', args=[self.slug]), language)
+    get_absolute_url.needs_language = True
 
     def title(self, language=None):
         if language:

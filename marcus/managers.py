@@ -25,7 +25,7 @@ class CategoryManager(CommonLanguageManager):
         return qs
 
 
-class TagManager(CommonLanguageManager):
+class TagManager(CategoryManager):
     pass
 
 

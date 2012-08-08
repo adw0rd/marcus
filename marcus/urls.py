@@ -9,6 +9,8 @@ urlpatterns = patterns('',
 
     url(r'^category/(?:(en|ru)/)?$', views.category_index, name='marcus-categories'),
     url(r'^category/([A-Za-z0-9_-]+)/(?:(en|ru)/)?$', views.category, name='marcus-category'),
+    url(r'^tag/(?:(en|ru)/)?$', views.tag_index, name='marcus-tags'),
+    url(r'^tag/([A-Za-z0-9_-]+)/(?:(en|ru)/)?$', views.tag, name='marcus-tag'),
     url(r'^archive/(?:(en|ru)/)?$', views.archive_index, name='marcus-archive-index'),
     url(r'^archive/(\d{4})/(?:(\d{2})/)?(?:(en|ru)/)?$', views.archive, name='marcus-archive'),
 
@@ -18,7 +20,8 @@ urlpatterns = patterns('',
     url(r'^suspected/delete/$', views.delete_spam, name='marcus-delete-spam'),
 
     url(r'^feed/(?:(en|ru)/)?$', feeds.Article(), name='marcus-feed'),
-    url(r'^^category/([A-Za-z0-9_-]+)/feed/(?:(en|ru)/)?$', feeds.Category(), name='marcus-category-feed'),
+    url(r'^category/([A-Za-z0-9_-]+)/feed/(?:(en|ru)/)?$', feeds.Category(), name='marcus-category-feed'),
+    url(r'^tag/([A-Za-z0-9_-]+)/feed/(?:(en|ru)/)?$', feeds.Tag(), name='marcus-tag-feed'),
     url(r'^comments/feed/(?:(en|ru)/)?$', feeds.Comment(), name='marcus-comments-feed'),
     url(r'^(\d{4})/(\d{2})/(\d{2})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleComment(), name='marcus-article-comments-feed'),
 

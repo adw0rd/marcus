@@ -82,6 +82,27 @@ def category(request, slug, language):
     )
 
 
+def tag_index(request, language):
+    translation.activate(language or 'ru')
+    return render(request,
+        'marcus/tag_list.html',
+        {'language': language, 'object_list': models.Tag.objects.language(language)},
+    )
+
+
+def tag(request, slug, language):
+    translation.activate(language or 'ru')
+    tag = get_object_or_404(models.Tag, slug=slug)
+    return object_list(request,
+        models.Article.public.language(language).filter(tags=tag),
+        'marcus/tag.html',
+        {
+            'tag': models.Translation(tag, language),
+            'language': language,
+        },
+    )
+
+
 def archive_index(request, language):
     translation.activate(language or 'ru')
     return render(request, 'marcus/archive-index.html', {
