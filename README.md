@@ -10,6 +10,7 @@ Via pip:
 
 <pre><code>pip install -e git://github.com/adw0rd/marcus.git#egg=marcus
 </code></pre>
+and install additional requirements: https://github.com/adw0rd/marcus/blob/master/requirements.txt
 
 From sources:
 
