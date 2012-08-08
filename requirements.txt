@@ -1,0 +1,14 @@
+Django
+pytils
+PIL
+simplejson
+html5lib
+httplib2
+python-openid
+markdown2
+SubHub
+-e git://github.com/isagalaev/pingdjack.git#egg=pingdjack
+-e git://github.com/isagalaev/scipio.git#egg=scipio
+
+# wordpress_importer required:
+html2text

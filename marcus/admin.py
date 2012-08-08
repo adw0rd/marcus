@@ -1,0 +1,73 @@
+# -*- coding:utf-8 -*-
+from django.db.models import fields
+from django import forms
+from django.contrib import admin
+
+from marcus import models
+
+
+class TimedBooleanFilter(admin.FieldListFilter):
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        self.lookup_kwarg = '%s__isnull' % field.name
+        self.lookup_val = request.GET.get(self.lookup_kwarg, None)
+        super(TimedBooleanFilter, self).__init__(field, request, params, model, model_admin, field_path)
+
+    def expected_parameters(self):
+        return [self.lookup_kwarg]
+
+    def choices(self, cl):
+        for k, v in [('All', None), ('Yes', ''), ('No', '1')]:
+            yield {
+                'selected': self.lookup_val == v,
+                'query_string': cl.get_query_string({self.lookup_kwarg: v}, []),
+                'display': k,
+            }
+
+
+admin.site.register(models.Category,
+    list_display = ['title', 'essential', 'parent'],
+)
+
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ['slug', 'title', 'is_published']
+    list_filter = [('published', TimedBooleanFilter)]
+    search_fields = ['slug', 'title_ru', 'title_en', 'categories__slug', 'categories__title_ru', 'categories__title_en']
+    ordering = ['-published']
+
+    fields = ['slug', 'title_ru', 'text_ru', 'title_en', 'text_en', 'categories', 'comments_hidden', 'published']
+
+    class form(forms.ModelForm):
+        class Meta:
+            model = models.Article
+            widgets = {
+                'title_ru': forms.TextInput(attrs={'size': 80}),
+                'text_ru': forms.Textarea(attrs={'cols': 80, 'rows': 30}),
+                'title_en': forms.TextInput(attrs={'size': 80}),
+                'text_en': forms.Textarea(attrs={'cols': 80, 'rows': 30}),
+            }
+
+    def is_published(self, obj):
+        return bool(obj.published)
+    is_published.boolean = True
+
+admin.site.register(models.Article, ArticleAdmin)
+
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'article', 'author_str', 'type', 'created_str', 'is_approved']
+    list_filter = [('approved', TimedBooleanFilter)]
+    ordering = ['-created']
+    select_related = ['article']
+    raw_id_fields = ['author', 'article']
+    search_fields = ['article__slug', 'author__username', 'author__scipio_profile__openid']
+
+    def is_approved(self, obj):
+        return bool(obj.approved)
+    is_approved.boolean = True
+
+    def created_str(self, obj):
+        return obj.created.strftime('%Y-%m-%d\xc2\xa0%H:%M')
+    created_str.admin_order_field = 'created'
+    created_str.short_description = 'created'
+
+admin.site.register(models.Comment, CommentAdmin)
