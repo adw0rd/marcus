@@ -6,6 +6,13 @@ Marcus is billingual blog engine, written Ivan Sagalaev (http://softwaremaniacs.
 Installation
 ============
 
+Via pip:
+
+<pre><code>pip install -e git://github.com/adw0rd/marcus.git#egg=marcus
+</code></pre>
+
+From sources:
+
 <pre><code>git clone git://github.com/adw0rd/marcus.git
 cd marcus
 mkdir venv
