@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+# coding: utf-8
 from django.core.urlresolvers import reverse
 from django.utils.encoding import smart_str
 
@@ -7,6 +7,7 @@ from scipio.antispam import akismet
 from scipio.models import Profile as ScipioProfile
 
 from marcus import utils
+
 
 class AkismetHandler(akismet.AkismetBaseHandler):
     def get_params(self, request, comment, **kwargs):
@@ -23,6 +24,7 @@ class AkismetHandler(akismet.AkismetBaseHandler):
             'comment_author_url': smart_str(openid),
             'comment_content': smart_str(comment.text),
         }
+
 
 class Paranoia(object):
     def validate(self, request, **kwargs):

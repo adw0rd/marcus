@@ -1,9 +1,16 @@
-# -*- coding:utf-8 -*-
+# coding: utf-8
 import re
+import pytils
+import markdown2
+import smorg_style.utils
+import pingdjack
+import subhub
 from datetime import datetime
+from scipio.models import Profile
 
 from django.db import models
 from django.db import transaction
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
@@ -11,13 +18,10 @@ from django.utils.text import truncate_words
 from django.utils.html import strip_tags
 from django.utils.functional import curry
 from django.utils.translation import ugettext_lazy as _
-import markdown2
-import smorg_style.utils
-import pingdjack
-import subhub
-from scipio.models import Profile
 
 from marcus import utils
+from marcus import managers
+
 
 class Translation(object):
     def __init__(self, obj, language):
@@ -34,18 +38,9 @@ class Translation(object):
     def __dir__(self):
         return dir(self.obj)
 
-class CategoryManager(models.Manager):
-    def language(self, code):
-        qs = self.get_query_set()
-        if code == 'en':
-            qs = qs.exclude(title_en='').order_by('title_en')
-        elif code == 'ru':
-            qs = qs.exclude(title_ru='').order_by('title_ru')
-        qs = qs.order_by('title_en' if code == 'en' else 'title_ru')
-        return qs
 
 class Category(models.Model):
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
     title_ru = models.CharField(max_length=255, blank=True)
     description_ru = models.TextField(blank=True)
     title_en = models.CharField(max_length=255, blank=True)
@@ -53,7 +48,7 @@ class Category(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True)
     essential = models.BooleanField(default=False, db_index=True)
 
-    objects = CategoryManager()
+    objects = managers.CategoryManager()
 
     class Meta:
         verbose_name = 'category'
@@ -61,6 +56,11 @@ class Category(models.Model):
 
     def __unicode__(self):
         return self.title()
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = pytils.translit.slugify(self.title_ru or self.title_en)
+        return self.save_base(*args, **kwargs)
 
     def title(self, language=None):
         if language:
@@ -88,31 +88,39 @@ class Category(models.Model):
         return Article.public.language(language).filter(categories=self).count()
     article_count.needs_language = True
 
-class PublicArticlesManager(models.Manager):
-    def get_query_set(self):
-        return super(PublicArticlesManager, self).get_query_set().exclude(published=None).order_by('-published')
 
-    def language(self, code):
-        qs = self.get_query_set()
-        if code == 'en':
-            qs = qs.exclude(text_en='')
-        elif code == 'ru':
-            qs = qs.exclude(text_ru='')
-        return qs
+class Tag(models.Model):
+    slug = models.SlugField(unique=True, blank=True)
+    title_ru = models.CharField(max_length=255, blank=True)
+    description_ru = models.TextField(blank=True)
+    title_en = models.CharField(max_length=255, blank=True)
+    description_en = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return self.title()
+
+    def title(self, language=None):
+        if language:
+            return self.title_en if language == 'en' else self.title_ru
+        else:
+            return self.title_ru or self.title_en
+    title.needs_language = True
+
 
 class Article(models.Model):
-    slug = models.SlugField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
     title_ru = models.CharField(max_length=255, blank=True)
     text_ru = models.TextField(blank=True)
     title_en = models.CharField(max_length=255, blank=True)
     text_en = models.TextField(blank=True)
     published = models.DateTimeField(blank=True, null=True, db_index=True)
     categories = models.ManyToManyField(Category)
+    tags = models.ManyToManyField(Tag)
     updated = models.DateTimeField(auto_now=True)
     comments_hidden = models.BooleanField(default=False)
 
     objects = models.Manager()
-    public = PublicArticlesManager()
+    public = managers.PublicArticlesManager()
 
     def __unicode__(self):
         return self.slug
@@ -135,6 +143,8 @@ class Article(models.Model):
             )
 
     def _pingback(self):
+        if settings.DEBUG:
+            return None
         language = 'en' if self.text_en else None
         pingdjack.ping_external_urls(
             utils.absolute_url(self.get_absolute_url(language)),
@@ -143,6 +153,8 @@ class Article(models.Model):
         )
 
     def save(self, **kwargs):
+        if not self.slug:
+            self.slug = pytils.translit.slugify(self.title_ru or self.title_en)
         already_published = bool(Article.objects.filter(pk=self.pk).exclude(published=None))
         super(Article, self).save(**kwargs)
         if self.published:
@@ -198,7 +210,8 @@ class Article(models.Model):
             return self.text_ru or self.text_en
 
     def html(self, language=None):
-        html = smorg_style.utils.usertext(markdown2.markdown(self._language_text(language)))
+        html = markdown2.markdown(self._language_text(language))
+        html = smorg_style.utils.usertext(html)
         return mark_safe(html)
     html.needs_language = True
 
@@ -218,27 +231,19 @@ COMMENT_TYPES = (
     ('pingback', u'Pingback'),
 )
 
-class PublicCommentsManager(models.Manager):
-    def get_query_set(self):
-        return super(PublicCommentsManager, self).get_query_set()\
-            .exclude(approved=None).order_by('created')
-
-    def language(self, code):
-        qs = self.get_query_set()
-        if code:
-            qs = qs.filter(language=code)
-        return qs
-
-class SuspectedCommentsManager(models.Manager):
-    def get_query_set(self):
-        return super(SuspectedCommentsManager, self).get_query_set()\
-            .filter(approved=None).exclude(spam_status='clean')\
-            .order_by('-created')
-
 LANGUAGES = (
     ('ru', _(u'Russian')),
     ('en', _(u'English')),
 )
+
+
+class ArticleUpload(models.Model):
+    article = models.ForeignKey(Article, related_name="uploads")
+    upload = models.FileField(upload_to="uploads")
+
+    def __unicode__(self):
+        return self.upload.name
+
 
 class Comment(models.Model):
     article = models.ForeignKey(Article)
@@ -247,6 +252,7 @@ class Comment(models.Model):
     language = models.CharField(_(u'Language'), max_length=2, choices=LANGUAGES)
     author = models.ForeignKey(User)
     guest_name = models.CharField(max_length=255, blank=True)
+    guest_email = models.CharField(max_length=200, blank=True, default='')
     guest_url = models.URLField(blank=True)
     ip = models.IPAddressField(default='127.0.0.1')
     spam_status = models.CharField(max_length=20, blank=True, default='')
@@ -255,8 +261,9 @@ class Comment(models.Model):
     noteworthy = models.BooleanField(default=False)
 
     objects = models.Manager()
-    public = PublicCommentsManager()
-    suspected = SuspectedCommentsManager()
+    public = managers.PublicCommentsManager()
+    suspected = managers.SuspectedCommentsManager()
+    common = managers.CommentsManager()
 
     def __unicode__(self):
         return u'%s, %s, %s' % (self.created.strftime('%Y-%m-%d'), self.article, self.author_str())
@@ -267,7 +274,7 @@ class Comment(models.Model):
     get_absolute_url.needs_language = True
 
     def html(self):
-        html = smorg_style.utils.usertext(markdown2.markdown(self.text, safe_mode='escape'))
+        html = smorg_style.utils.usertext(markdown2.markdown(self.text))
         return mark_safe(html)
 
     def summary(self):

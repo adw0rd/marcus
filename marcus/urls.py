@@ -1,10 +1,8 @@
-# -*- coding:utf-8 -*-
-import re
-
-from django.conf.urls.defaults import *
+# coding:utf-8
 import pingdjack
+from django.conf.urls import patterns, url
+from marcus import views, feeds
 
-from marcus import views, models, feeds
 
 urlpatterns = patterns('',
     url(r'^(?:(en|ru)/)?$', views.index, name='marcus-index'),
@@ -30,4 +28,6 @@ urlpatterns = patterns('',
     url(r'^(\d{4})/(\d{2})/(\d{2})/([^/]+)/(?:(en|ru)/)?$', views.article, name='marcus-article'),
     url(r'^draft/(\d+)/(?:(en|ru)/)?$', views.draft, name='marcus-draft'),
     url(r'^([^/]+)/$', views.find_article, name='marcus-find-article'),
+
+    url(r'^articleuploadimage/preview/(\d+)/$', views.article_upload_image_preview, name="article-upload-image-preview")
 )

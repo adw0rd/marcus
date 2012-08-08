@@ -1,9 +1,10 @@
-# -*- coding:utf-8 -*-
-from django.db.models import fields
+# coding: utf-8
 from django import forms
 from django.contrib import admin
 
 from marcus import models
+from marcus import actions
+from marcus import widgets
 
 
 class TimedBooleanFilter(admin.FieldListFilter):
@@ -24,17 +25,27 @@ class TimedBooleanFilter(admin.FieldListFilter):
             }
 
 
-admin.site.register(models.Category,
-    list_display = ['title', 'essential', 'parent'],
-)
+admin.site.register(models.Category, list_display=['title', 'essential', 'parent'])
+
+
+class ArticleUploadForm(forms.ModelForm):
+    upload = forms.FileField(widget=widgets.AdminImageWidget)
+
+
+class ArticleUploadInlineAdmin(admin.TabularInline):
+    model = models.ArticleUpload
+    form = ArticleUploadForm
+
 
 class ArticleAdmin(admin.ModelAdmin):
+    save_on_top = True
     list_display = ['slug', 'title', 'is_published']
     list_filter = [('published', TimedBooleanFilter)]
     search_fields = ['slug', 'title_ru', 'title_en', 'categories__slug', 'categories__title_ru', 'categories__title_en']
     ordering = ['-published']
+    inlines = [ArticleUploadInlineAdmin]
 
-    fields = ['slug', 'title_ru', 'text_ru', 'title_en', 'text_en', 'categories', 'comments_hidden', 'published']
+    fields = ['slug', 'title_ru', 'text_ru', 'title_en', 'text_en', 'categories', 'tags', 'comments_hidden', 'published']
 
     class form(forms.ModelForm):
         class Meta:
@@ -53,7 +64,14 @@ class ArticleAdmin(admin.ModelAdmin):
 admin.site.register(models.Article, ArticleAdmin)
 
 
+class ArticleUploadAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(models.ArticleUpload, ArticleUploadAdmin)
+
+
 class CommentAdmin(admin.ModelAdmin):
+    actions = [actions.make_approved]
     list_display = ['pk', 'article', 'author_str', 'type', 'created_str', 'is_approved']
     list_filter = [('approved', TimedBooleanFilter)]
     ordering = ['-created']

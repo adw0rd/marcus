@@ -1,0 +1,50 @@
+{% load i18n %}
+<ul>
+    {% for comment in comments %}
+        <li>
+            <a name="comment-{{ comment.pk }}"></a>
+            <p>
+                <a href="{{ comment.get_absolute_url }}">{{ comment.created }}</a>
+                {% spaceless %}
+                {% if comment.author_url %}
+                    <a href="{{ comment.author_url }}">{{ comment.author_str }}</a>
+                {% else %}
+                    {{ comment.author_str }}
+                {% endif %}
+                {% endspaceless %}
+            </p>
+            <p>
+                {{ comment.html }}
+            </p>
+        </li>
+    {% endfor %}
+</ul>
+
+<hr />
+<a name="comment-form"></a>
+{% if form %}
+    <form action="{{ article.get_absolute_url }}#comment-form" method="post">
+        {% csrf_token %}
+        {% if request.user.is_authenticated %}
+            {{ request.user }}
+        {% else %}
+            <div>
+                <input id="{{ form.name.auto_id }}" name="{{ form.name.name }}" placeholder="{{ form.name.label }}"
+                       value="{{ form.name.value|default:"" }}" />
+                {% for error in form.errors.name %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div>
+            <textarea id="{{ form.text.auto_id }}" name="{{ form.text.name }}" placeholder="{{ form.text.label }}"
+                      cols="100" rows="10">{{ form.text.value|default:"" }}</textarea>
+            {% for error in form.errors.text %}
+                {{ error }}
+            {% endfor %}
+        </div>
+        <input type="submit" value="{% trans "Send to moderation" %}" />
+    </form>
+{% else %}
+    <p>{% trans "Article is closed for comments" %}</p>
+{% endif %}

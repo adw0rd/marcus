@@ -26,6 +26,9 @@ msgstr "комментарии"
 msgid "Name"
 msgstr "Имя"
 
+msgid "Name or OpenID"
+msgstr "Имя или OpenID"
+
 #: models.py:231
 msgid "Russian"
 msgstr "Русский"
@@ -41,3 +44,9 @@ msgstr "Текст"
 #: models.py:239
 msgid "Language"
 msgstr "Язык"
+
+msgid "Comments"
+msgstr "Комментарии"
+
+msgid "Article is closed for comments"
+msgstr "Статья закрыта для комментирования"

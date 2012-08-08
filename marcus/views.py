@@ -1,6 +1,8 @@
-# -*- coding:utf-8 -*-
-import sys
-from datetime import date, datetime
+# coding: utf-8
+import pingdjack
+import scipio
+from datetime import datetime
+from scipio.forms import AuthForm
 
 from django.core.paginator import Paginator, InvalidPage
 from django.views.decorators.http import require_POST
@@ -10,12 +12,10 @@ from django.utils import translation, simplejson
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.conf import settings
-import pingdjack
-
-import scipio
-from scipio.forms import AuthForm
+from django.http import HttpResponse
 
 from marcus import models, forms, antispam
+
 
 def object_list(request, queryset, template_name, context):
     paginator = Paginator(queryset, settings.MARCUS_PAGINATE_BY)
@@ -30,6 +30,7 @@ def object_list(request, queryset, template_name, context):
     })
     return render(request, template_name, context)
 
+
 def superuser_required(func):
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated() or not request.user.is_superuser:
@@ -37,11 +38,13 @@ def superuser_required(func):
         return func(request, *args, **kwargs)
     return wrapper
 
+
 def get_ip(request):
     ip = request.META.get('REMOTE_ADDR') or models.Comment._meta.get_field('ip').default
     if ip and ip.startswith('::ffff:'):
         ip = ip[7:]
     return ip
+
 
 def index(request, language):
     translation.activate(language or 'ru')
@@ -56,6 +59,7 @@ def index(request, language):
         'comments': comments,
     })
 
+
 def category_index(request, language):
     translation.activate(language or 'ru')
     return object_list(request,
@@ -63,6 +67,7 @@ def category_index(request, language):
         'marcus/category_list.html',
         {'language': language},
     )
+
 
 def category(request, slug, language):
     translation.activate(language or 'ru')
@@ -76,12 +81,14 @@ def category(request, slug, language):
         },
     )
 
+
 def archive_index(request, language):
     translation.activate(language or 'ru')
     return render(request, 'marcus/archive-index.html', {
         'language': language,
         'months': sorted(models.Article.public.language(language).dates('published', 'month'), reverse=True),
     })
+
 
 def archive(request, year, month, language):
     translation.activate(language or 'ru')
@@ -104,6 +111,7 @@ def archive(request, year, month, language):
         },
     )
 
+
 def find_article(request, slug):
     translation.activate('ru')
     objs = models.Article.objects.filter(slug__startswith=slug)
@@ -117,6 +125,7 @@ def find_article(request, slug):
             'marcus/article_choice_list.html',
             {'slug': slug, 'language': None},
         )
+
 
 def _process_new_comment(request, comment, language, check_login):
     spam_status = antispam.conveyor.validate(request, comment=comment)
@@ -139,6 +148,7 @@ def _process_new_comment(request, comment, language, check_login):
         request.session['unapproved'] = comment.pk
     comment.save()
     return redirect(models.Translation(comment, language))
+
 
 def article(request, year, month, day, slug, language):
     obj = get_object_or_404(models.Article, published__year=year, published__month=month, published__day=day, slug=slug)
@@ -168,6 +178,7 @@ def article(request, year, month, day, slug, language):
         'language': language,
     })
 
+
 @superuser_required
 def draft(request, pk, language):
     translation.activate(language or 'ru')
@@ -177,6 +188,7 @@ def draft(request, pk, language):
         'categories': (models.Translation(c, language) for c in obj.categories.all()),
         'language': language,
     })
+
 
 def acquire_comment(sender, user, acquire=None, language=None, **kwargs):
     if acquire is None:
@@ -190,6 +202,7 @@ def acquire_comment(sender, user, acquire=None, language=None, **kwargs):
     except models.Comment.DoesNotExist:
         pass
 scipio.signals.authenticated.connect(acquire_comment)
+
 
 @superuser_required
 @require_POST
@@ -205,6 +218,7 @@ def approve_comment(request, id):
             scipio_profile.save()
     return redirect(spam_queue)
 
+
 @superuser_required
 @require_POST
 def spam_comment(request, id):
@@ -218,11 +232,13 @@ def spam_comment(request, id):
     comment.delete()
     return redirect(comment.article)
 
+
 @superuser_required
 @require_POST
 def delete_spam(request):
     models.Comment.suspected.all().delete()
     return redirect(spam_queue)
+
 
 @superuser_required
 def spam_queue(request):
@@ -232,13 +248,15 @@ def spam_queue(request):
         {}
     )
 
+
 @require_POST
 def comment_preview(request):
     html = models.Comment(text=request.POST.get('text', '')).html()
     return http.HttpResponse(
         simplejson.dumps({'status': 'valid', 'html': html}),
-        content_type = 'application/json',
+        content_type='application/json',
     )
+
 
 def handle_pingback(sender, source_url, view, args, author, excerpt, **kwargs):
     if view != article:
@@ -247,13 +265,33 @@ def handle_pingback(sender, source_url, view, args, author, excerpt, **kwargs):
     if a.comment_set.filter(type='pingback', guest_url=source_url):
         raise pingdjack.DuplicatePing
     a.comment_set.create(
-        type = 'pingback',
-        text = excerpt,
-        author = User.objects.get(username='marcus_guest'),
-        guest_name = author,
-        guest_url = source_url,
-        ip = get_ip(sender),
-        language = a.comment_language(args[4]),
-        approved = datetime.now(),
+        type='pingback',
+        text=excerpt,
+        author=User.objects.get(username='marcus_guest'),
+        guest_name=author,
+        guest_url=source_url,
+        ip=get_ip(sender),
+        language=a.comment_language(args[4]),
+        approved=datetime.now(),
     )
 pingdjack.received.connect(handle_pingback)
+
+
+def article_upload_image_preview(request, object_id):
+    max_width = 300
+    image_path = get_object_or_404(models.ArticleUpload, pk=object_id).upload.path
+
+    import StringIO
+    try:
+        from PIL import Image
+    except ImportError:
+        import Image
+    try:
+        image = Image.open(image_path.encode('utf-8'))
+    except:
+        return HttpResponse("Not a image", mimetype="text/html")
+
+    buffer = StringIO.StringIO()
+    height = int((float(image.size[1]) * float(max_width / float(image.size[0]))))
+    image.resize((max_width, height), Image.ANTIALIAS).save(buffer, "PNG")
+    return HttpResponse(buffer.getvalue(), mimetype="image/png")

@@ -1,4 +1,4 @@
-# -*- coding:utf-8 -*-
+# coding: utf-8
 from hashlib import md5
 
 from django.core.urlresolvers import reverse
@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.conf import settings
 
 from marcus import models, utils
+
 
 class ContentAtom1Feed(Atom1Feed):
     def add_root_elements(self, handler):
@@ -36,6 +37,7 @@ def viewmethod(view):
     def method(self, request, *args, **kwargs):
         return view(request, self, *args, **kwargs)
     return method
+
 
 class ContentFeed(views.Feed):
     feed_type = ContentAtom1Feed
@@ -70,6 +72,7 @@ class ContentFeed(views.Feed):
     def __call__(request, self, *args, **kwargs):
         return super(ContentFeed, self).__call__(request, *args, **kwargs)
 
+
 class ArticleFeed(object):
     title_template = 'marcus/feeds/article_title.html'
     description_template = 'marcus/feeds/article_summary.html'
@@ -86,7 +89,7 @@ class ArticleFeed(object):
         return [models.Translation(a, language) for a in qs]
 
     def item_pubdate(self, article):
-        return article.updated
+        return article.published
 
     def updated(self, article):
         return article.published
@@ -157,6 +160,7 @@ class CommentFeed(object):
     def updated(self, comment):
         return comment.approved
 
+
 class Comment(CommentFeed, ContentFeed):
     def get_object(self, request, language):
         translation.activate(language or 'ru')
@@ -168,14 +172,15 @@ class Comment(CommentFeed, ContentFeed):
     def get_query_set(self, obj, language):
         return models.Comment.public.language(language).order_by('-created')
 
+
 class ArticleComment(CommentFeed, ContentFeed):
     def get_object(self, request, year, month, day, slug, language):
         translation.activate(language or 'ru')
         return get_object_or_404(models.Article,
-            published__year = year,
-            published__month = month,
-            published__day = day,
-            slug = slug,
+            published__year=year,
+            published__month=month,
+            published__day=day,
+            slug=slug,
         ), language
 
     def title(self, (article, language)):

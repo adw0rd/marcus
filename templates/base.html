@@ -1,0 +1,39 @@
+{% load static i18n %}<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}{% endblock %} / {% trans "Site name" %}</title>
+        <meta name="keywords" content="{% block keywords %}{% endblock %}">
+        <meta name="description" content="{% block description %}{% endblock %}">
+        <meta property="og:title" content="{% block og_title %}{% endblock %}"/>
+        <meta property="og:image" content="{% block og_image %}{% endblock %}"/>
+        <meta property="og:description" content="{% block og_description %}{% endblock %}"/>
+        {% block meta %}{% endblock %}
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <style type="text/css">{% block css %}{% endblock %}</style>
+        <script type="text/javascript">{% block javascript %}{% endblock %}</script>
+    </head>
+    <body>
+        <div class="header">
+            {% block header %}
+                <h1>
+                    <a href="{% url marcus-index %}">{% trans "Site name" %}</a>
+                </h1>
+                <hr />
+            {% endblock %}
+        </div>
+        <div class="container">
+            {% block container %}{% endblock %}
+        </div>
+        <div class="footer">
+            {% block footer %}
+                <hr />
+                {% trans "Powered by" %} <a href="http://softwaremaniacs.org/blog/2010/07/19/marcus-bilingual-blog/">marcus</a>
+                {% trans "and" %} <a href="http://djangoproject.com/">django</a>!
+            {% endblock %}
+        </div>
+    </body>
+</html>
