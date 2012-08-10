@@ -146,3 +146,10 @@ class HtmlToMarkdownPipeline(BasePipeline):
     """
     def replace_content(self, content):
         return html2text.html2text(content)
+
+
+class ReplaceCommentedMoreToAnchored(BasePipeline):
+
+    def replace_content(self, content):
+        content = re.sub(r'<!--\s*more\s*-->', r'<a name="more"></a>', content)
+        return content
