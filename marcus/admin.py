@@ -41,7 +41,7 @@ class ArticleAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ['slug', 'title', 'is_published']
     list_filter = [('published', TimedBooleanFilter)]
-    search_fields = ['slug', 'title_ru', 'title_en', 'categories__slug', 'categories__title_ru', 'categories__title_en']
+    search_fields = ['slug', 'title_ru', 'title_en', 'text_ru', 'text_en', 'categories__slug', 'categories__title_ru', 'categories__title_en']
     ordering = ['-published']
     inlines = [ArticleUploadInlineAdmin]
 
