@@ -50,3 +50,9 @@ msgstr "Комментарии"
 
 msgid "Article is closed for comments"
 msgstr "Статья закрыта для комментирования"
+
+msgid "Noteworthy comment"
+msgstr "Заслуживающий внимания комментарий"
+
+msgid "Noteworthy"
+msgstr "Заслуживающий внимания"
