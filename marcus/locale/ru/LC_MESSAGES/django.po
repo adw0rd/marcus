@@ -62,3 +62,6 @@ msgstr "Заслуживающий внимания комментарий"
 
 msgid "Noteworthy"
 msgstr "Заслуживающий внимания"
+
+msgid "Articles starts with slug"
+msgstr "Статьи со слагом на"

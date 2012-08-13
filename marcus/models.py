@@ -216,7 +216,7 @@ class Article(models.Model):
             return self.text_ru or self.text_en
 
     def html(self, language=None):
-        html = markdown2.markdown(self._language_text(language))
+        html = markdown2.markdown(self._language_text(language), extras=settings.MARCUS_MARKDOWN_EXTRAS)
         html = smorg_style.utils.usertext(html)
         return mark_safe(html)
     html.needs_language = True
@@ -226,7 +226,7 @@ class Article(models.Model):
     summary.needs_language = True
 
     def intro(self, language=None):
-        result = markdown2.markdown(self._language_text(language))
+        result = markdown2.markdown(self._language_text(language), extras=settings.MARCUS_MARKDOWN_EXTRAS)
         pattern = re.compile(r'^(.*)<a name="more"></a>.*', re.S)
         match = re.match(pattern, result)
         return match and mark_safe(match.group(1))
@@ -280,7 +280,8 @@ class Comment(models.Model):
     get_absolute_url.needs_language = True
 
     def html(self):
-        html = smorg_style.utils.usertext(markdown2.markdown(self.text))
+        html = markdown2.markdown(self.text, extras=settings.MARCUS_MARKDOWN_EXTRAS)
+        html = smorg_style.utils.usertext(html)
         return mark_safe(html)
 
     def summary(self):
