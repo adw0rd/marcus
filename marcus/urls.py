@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^tag/(?:(en|ru)/)?$', views.tag_index, name='marcus-tags'),
     url(r'^tag/([A-Za-z0-9_-]+)/(?:(en|ru)/)?$', views.tag, name='marcus-tag'),
     url(r'^archive/(?:(en|ru)/)?$', views.archive_index, name='marcus-archive-index'),
-    url(r'^archive/(\d{4})/(?:(\d{2})/)?(?:(en|ru)/)?$', views.archive, name='marcus-archive'),
+    url(r'^archive/(\d{4})/(?:(\d{1,2})/)?(?:(en|ru)/)?$', views.archive, name='marcus-archive'),
 
     url(r'^suspected/$', views.spam_queue, name='marcus-spam-queue'),
     url(r'^suspected/approve/(\d+)/$', views.approve_comment, name='marcus-approve-comment'),

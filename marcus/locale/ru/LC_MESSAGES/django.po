@@ -48,6 +48,12 @@ msgstr "Язык"
 msgid "Comments"
 msgstr "Комментарии"
 
+msgid "Archive"
+msgstr "Архив"
+
+msgid "Archive for"
+msgstr "Архив за"
+
 msgid "Article is closed for comments"
 msgstr "Статья закрыта для комментирования"
 
