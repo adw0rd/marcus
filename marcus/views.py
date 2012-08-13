@@ -160,7 +160,7 @@ def _process_new_comment(request, comment, language, check_login):
         form = AuthForm(request.session, {'openid_identifier': request.POST['name']})
         if form.is_valid():
             comment = models.Translation(comment, language)
-            url = form.auth_redirect(comment.get_absolute_url(), data={'acquire': str(comment.pk)})
+            url = form.auth_redirect(request, target=comment.get_absolute_url(), data={'acquire': str(comment.pk)})
             return redirect(url)
     comment.spam_status = spam_status
     if spam_status == 'clean':
