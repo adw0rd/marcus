@@ -135,7 +135,7 @@ def archive(request, year, month, language):
 
 def find_article(request, slug):
     translation.activate('ru')
-    objs = models.Article.objects.filter(slug__startswith=slug)
+    objs = models.Article.public.filter(slug__startswith=slug)
     if not objs:
         raise http.Http404()
     if len(objs) == 1:
