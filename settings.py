@@ -39,3 +39,5 @@ SCIPIO_STORE_ROOT = '/path/to/scipio'
 # Complete site URL is passed if the value is empty.
 SCIPIO_TRUST_URL = ''
 SCIPIO_AKISMET_KEY = ''
+
+SCIPIO_USE_CONTRIB_SITES = True

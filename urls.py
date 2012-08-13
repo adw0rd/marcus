@@ -8,6 +8,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^', include('marcus.urls')),
     url(r'^', include('subhub.urls')),
+    url(r'^', include('scipio.urls')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^sitemap', include('marcus.sitemap_urls')),
