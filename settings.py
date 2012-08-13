@@ -41,3 +41,8 @@ SCIPIO_TRUST_URL = ''
 SCIPIO_AKISMET_KEY = ''
 
 SCIPIO_USE_CONTRIB_SITES = True
+
+AUTHENTICATION_BACKENDS = (
+    'scipio.authentication.OpenIdBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
