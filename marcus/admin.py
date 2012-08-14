@@ -5,6 +5,7 @@ from django.contrib import admin
 from marcus import models
 from marcus import actions
 from marcus import widgets
+from marcus import mixins
 
 
 class TimedBooleanFilter(admin.FieldListFilter):
@@ -37,9 +38,9 @@ class ArticleUploadInlineAdmin(admin.TabularInline):
     form = ArticleUploadForm
 
 
-class ArticleAdmin(admin.ModelAdmin):
+class ArticleAdmin(mixins.ArticleTextSizeAdminMixin, admin.ModelAdmin):
     save_on_top = True
-    list_display = ['slug', 'title', 'is_published']
+    list_display = ['slug', 'title', 'text_size', 'is_published']
     list_filter = [('published', TimedBooleanFilter)]
     search_fields = ['slug', 'title_ru', 'title_en', 'text_ru', 'text_en', 'categories__slug', 'categories__title_ru', 'categories__title_en']
     ordering = ['-published']
