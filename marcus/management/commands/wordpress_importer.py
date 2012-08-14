@@ -314,7 +314,7 @@ class Command(LabelCommand):
             post_type = item_node.find('{%s}post_type' % WP_NS).text
             content = item_node.find('{http://purl.org/rss/1.0/modules/content/}encoded').text
 
-            if post_type == 'post' and content and title:
+            if post_type == 'post' and title:
                 article_data = self.import_article(title, content, item_node)
 
                 for pipeline_path in ARTICLE_PIPELINES:
