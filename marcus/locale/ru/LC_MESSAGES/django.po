@@ -57,6 +57,9 @@ msgstr "Архив за"
 msgid "Article is closed for comments"
 msgstr "Статья закрыта для комментирования"
 
+msgid "Comment is awaiting approval"
+msgstr "Комментарий ожидает подтверждения"
+
 msgid "Noteworthy comment"
 msgstr "Заслуживающий внимания комментарий"
 
