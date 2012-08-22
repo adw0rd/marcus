@@ -47,6 +47,7 @@ class ArticleAdmin(mixins.ArticleTextSizeAdminMixin, admin.ModelAdmin):
     inlines = [ArticleUploadInlineAdmin]
 
     fields = ['slug', 'title_ru', 'text_ru', 'title_en', 'text_en', 'categories', 'tags', 'comments_hidden', 'published']
+    filter_horizontal = ['categories', 'tags', ]
 
     class form(forms.ModelForm):
         class Meta:
