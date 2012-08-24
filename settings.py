@@ -9,6 +9,11 @@ MARCUS_AUTHOR_ID = 1
 MARCUS_TITLE = 'Blog'
 MARCUS_SUBTITLE = 'Sample blog'
 
+MARCUS_SEARCH_FIELDS = [
+    'slug', 'title_ru', 'title_en', 'text_ru', 'text_en',
+    'categories__slug', 'categories__title_ru', 'categories__title_en',
+]
+
 MARCUS_WORDPRESS_IMPORTER = {
     'ARTICLE_PIPELINES': (
         'marcus.wordpress_importer.pipelines.CodecolorerToHighlightJsPipeline',

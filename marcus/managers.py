@@ -1,8 +1,9 @@
-# coding: utf-8
 from django.db import models
 
+from marcus.queryset import MarcusManager
 
-class CommonLanguageManager(models.Manager):
+
+class CommonLanguageManager(MarcusManager):
     def language(self, code):
         qs = self.get_query_set()
         if code == 'en':

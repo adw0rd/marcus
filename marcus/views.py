@@ -191,13 +191,13 @@ def article(request, year, month, day, slug, language):
             del request.session['unapproved']
 
     return render(request, 'marcus/article.html', {
-        'article': models.Translation(obj, language),
-        'comments': comments,
-        'noteworthy_count': comments.filter(noteworthy=True).count(),
-        'form': not obj.comments_hidden and form,
-        'unapproved': unapproved,
-        'language': language,
-    })
+            'article': models.Translation(obj, language),
+            'comments': comments,
+            'noteworthy_count': comments.filter(noteworthy=True).count(),
+            'form': not obj.comments_hidden and form,
+            'unapproved': unapproved,
+            'language': language,
+        })
 
 
 @superuser_required
@@ -316,3 +316,28 @@ def article_upload_image_preview(request, object_id):
     height = int((float(image.size[1]) * float(max_width / float(image.size[0]))))
     image.resize((max_width, height), Image.ANTIALIAS).save(buffer, "PNG")
     return HttpResponse(buffer.getvalue(), mimetype="image/png")
+
+
+def search(request, language):
+    SEARCH_LANGUAGES = (
+        (None, 'All'),
+        ('en', 'English'),
+    )
+    search_query = request.GET.get('s', '')
+    search_language = request.GET.get('l', None)
+    if search_language not in dict(SEARCH_LANGUAGES).keys():
+        search_language = None
+
+    language = search_language
+    translation.activate(language or 'ru')
+
+    return object_list(request,
+        models.Article.public.language(language).search(search_query),
+        'marcus/search.html',
+        {
+            'search_query': search_query,
+            'search_language': search_language,
+            'language': language,
+            'search_languages': SEARCH_LANGUAGES,
+        },
+    )
