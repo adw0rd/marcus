@@ -88,6 +88,9 @@ class Category(models.Model):
         return Article.public.language(language).filter(categories=self).count()
     article_count.needs_language = True
 
+    def get_anchor(self):
+        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(), self.title())
+
 
 class Tag(models.Model):
     slug = models.SlugField(unique=True, blank=True)
@@ -111,6 +114,9 @@ class Tag(models.Model):
         else:
             return self.title_ru or self.title_en
     title.needs_language = True
+
+    def get_anchor(self):
+        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(), self.title())
 
 
 class Article(models.Model):
@@ -231,6 +237,12 @@ class Article(models.Model):
         match = re.match(pattern, result)
         return match and mark_safe(match.group(1))
     intro.needs_language = True
+
+    def categories_links(self):
+        return [category.get_anchor() for category in self.categories.all()]
+
+    def tags_links(self):
+        return [tag.get_anchor() for tag in self.tags.all()]
 
 COMMENT_TYPES = (
     ('comment', u'Комментарий'),
