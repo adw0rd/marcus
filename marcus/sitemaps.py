@@ -8,7 +8,13 @@ sitemaps = {
     'flatpages': FlatPageSitemap,
     'articles': GenericSitemap(
         {
-            'queryset': models.Article.objects.exclude(published=None).order_by('-published'),
+            'queryset': models.Article.public.language(None).order_by('-published'),
+            'date_field': 'published',
+        },
+        priority=0.9),
+    'articles-en': GenericSitemap(
+        {
+            'queryset': models.Article.public.language('en').order_by('-published'),
             'date_field': 'published',
         },
         priority=0.9),
