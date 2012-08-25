@@ -103,7 +103,7 @@ class Category(models.Model):
     article_count.needs_language = True
 
     def anchor(self, language=None):
-        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(), self.title(language))
+        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(language), self.title(language))
     anchor.needs_language = True
 
 
@@ -149,7 +149,7 @@ class Tag(models.Model):
     article_count.needs_language = True
 
     def anchor(self, language=None):
-        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(), self.title(language))
+        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(language), self.title(language))
     anchor.needs_language = True
 
     def count(self, language=None):
