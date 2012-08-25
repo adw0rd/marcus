@@ -5,12 +5,12 @@ from marcus.queryset import MarcusManager
 
 class CommonLanguageManager(MarcusManager):
     def language(self, code):
-        qs = self.get_query_set()
+        queryset = self.get_query_set()
         if code == 'en':
-            qs = qs.exclude(text_en='')
+            queryset = queryset.exclude(text_en='')
         elif code == 'ru':
-            qs = qs.exclude(text_ru='')
-        return qs
+            queryset = queryset.exclude(text_ru='')
+        return queryset
 
 
 class PublicArticlesManager(CommonLanguageManager):
@@ -21,21 +21,41 @@ class PublicArticlesManager(CommonLanguageManager):
 
 class CategoryManager(CommonLanguageManager):
     def language(self, code):
-        qs = super(CategoryManager, self).language(code)
-        qs = qs.order_by('title_en' if code == 'en' else 'title_ru')
-        return qs
+        queryset = super(CategoryManager, self).language(code)
+        queryset = queryset.order_by('title_en' if code == 'en' else 'title_ru')
+        return queryset
+
+    def popular(self, code):
+        order_by = ['-essential']
+        queryset = self.get_query_set()
+        if code == "en":
+            order_by.append('-count_articles_en')
+            queryset = queryset.filter(count_articles_en__gt=0)
+        else:
+            order_by.extend(['-count_articles_ru', '-count_articles_en', ])
+            queryset = queryset.filter(models.Q(count_articles_ru__gt=0) | models.Q(count_articles_en__gt=0))
+        return queryset.order_by(*order_by)
 
 
 class TagManager(CategoryManager):
-    pass
+    def popular(self, code):
+        order_by = []
+        queryset = self.get_query_set()
+        if code == "en":
+            order_by.append('-count_articles_en')
+            queryset = queryset.filter(count_articles_en__gt=0)
+        else:
+            order_by.extend(['-count_articles_ru', '-count_articles_en', ])
+            queryset = queryset.filter(models.Q(count_articles_ru__gt=3) | models.Q(count_articles_en__gt=3))
+        return queryset.order_by(*order_by)
 
 
 class CommentsManager(models.Manager):
     def language(self, code):
-        qs = self.get_query_set()
+        queryset = self.get_query_set()
         if code:
-            qs = qs.filter(language=code)
-        return qs
+            queryset = queryset.filter(language=code)
+        return queryset
 
 
 class PublicCommentsManager(CommentsManager):

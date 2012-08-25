@@ -5,6 +5,7 @@ import markdown2
 import smorg_style.utils
 import pingdjack
 import subhub
+import itertools
 from datetime import datetime
 from scipio.models import Profile
 
@@ -18,6 +19,7 @@ from django.utils.text import truncate_words
 from django.utils.html import strip_tags
 from django.utils.functional import curry
 from django.utils.translation import ugettext_lazy as _
+from django.db.models.signals import post_save
 
 from marcus import utils
 from marcus import managers
@@ -38,13 +40,25 @@ class Translation(object):
     def __dir__(self):
         return dir(self.obj)
 
+    def __unicode__(self):
+        """For drawing sequence
+
+        Example:
+        {% with article|translate:language as article %}
+            Tags: {{ article.tags_links|safeseq|join:", " }}
+        {% endwith %}
+        """
+        return unicode(self.obj)
+
 
 class Category(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     title_ru = models.CharField(max_length=255, blank=True)
     description_ru = models.TextField(blank=True)
+    count_articles_ru = models.PositiveIntegerField(default=0)
     title_en = models.CharField(max_length=255, blank=True)
     description_en = models.TextField(blank=True)
+    count_articles_en = models.PositiveIntegerField(default=0)
     parent = models.ForeignKey('self', null=True, blank=True)
     essential = models.BooleanField(default=False, db_index=True)
 
@@ -88,16 +102,19 @@ class Category(models.Model):
         return Article.public.language(language).filter(categories=self).count()
     article_count.needs_language = True
 
-    def get_anchor(self):
-        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(), self.title())
+    def anchor(self, language=None):
+        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(), self.title(language))
+    anchor.needs_language = True
 
 
 class Tag(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     title_ru = models.CharField(max_length=255, blank=True)
     description_ru = models.TextField(blank=True)
+    count_articles_ru = models.PositiveIntegerField(default=0)
     title_en = models.CharField(max_length=255, blank=True)
     description_en = models.TextField(blank=True)
+    count_articles_en = models.PositiveIntegerField(default=0)
 
     objects = managers.TagManager()
 
@@ -115,8 +132,28 @@ class Tag(models.Model):
             return self.title_ru or self.title_en
     title.needs_language = True
 
-    def get_anchor(self):
-        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(), self.title())
+    def article_count(self, language=None):
+        return Article.public.language(language).filter(tags=self).count()
+    article_count.needs_language = True
+
+    def anchor(self, language=None):
+        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(), self.title(language))
+    anchor.needs_language = True
+
+    def count(self, language=None):
+        if language:
+            count = self.count_articles_en if language == 'en' else self.count_articles_ru
+        else:
+            count = self.count_articles_ru or self.count_articles_en
+        return count
+    count.needs_language = True
+
+    def size(self, language=None):
+        return "{0}%".format(100 + (self.count(language) * 3))
+    size.needs_language = True
+
+    def color(self):
+        return "#b2b2b2"
 
 
 class Article(models.Model):
@@ -238,11 +275,13 @@ class Article(models.Model):
         return match and mark_safe(match.group(1))
     intro.needs_language = True
 
-    def categories_links(self):
-        return [category.get_anchor() for category in self.categories.all()]
+    def categories_links(self, language=None):
+        return [category.anchor(language) for category in self.categories.all()]
+    categories_links.needs_language = True
 
-    def tags_links(self):
-        return [tag.get_anchor() for tag in self.tags.all()]
+    def tags_links(self, language=None):
+        return [tag.anchor(language) for tag in self.tags.all()]
+    tags_links.needs_language = True
 
 COMMENT_TYPES = (
     ('comment', u'Комментарий'),
@@ -315,3 +354,16 @@ class Comment(models.Model):
             return self.author.scipio_profile.openid
         except (Profile.DoesNotExist, AttributeError):
             return None
+
+
+def update_tag_and_category_counts(sender, instance, created, **kwargs):
+    """Recalculation a counts for articles
+    """
+    objects = itertools.chain(instance.tags.all(), instance.categories.all())
+    for o in objects:
+        if instance.text_en:
+            o.count_articles_en = o.article_count(language="en")
+        if instance.text_ru:
+            o.count_articles_ru = o.article_count(language="ru")
+        o.save()
+post_save.connect(update_tag_and_category_counts, sender=Article)
