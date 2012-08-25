@@ -23,5 +23,7 @@ def get_language_code_in_text(text):
 
     @return "en" or "ru"
     """
-    language = "ru" if re.search(u'[а-яА-Я]+', text) else "en"
+    language = None
+    if text:
+        language = "ru" if re.search(u'[а-яА-Я]+', text) else "en"
     return language

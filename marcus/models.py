@@ -73,7 +73,7 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = pytils.translit.slugify(self.title_ru or self.title_en)
+            self.slug = pytils.translit.slugify(self.title_en or self.title_ru)
         return self.save_base(*args, **kwargs)
 
     def title(self, language=None):
@@ -120,6 +120,18 @@ class Tag(models.Model):
 
     def __unicode__(self):
         return self.title()
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = pytils.translit.slugify(self.title_en or self.title_ru)
+
+        if not self.title_en and utils.get_language_code_in_text(self.title_ru) == "en":
+            self.title_en = self.title_ru
+
+        if not self.title_ru:
+            self.title_ru = self.title_en
+
+        return self.save_base(*args, **kwargs)
 
     def get_absolute_url(self, language=None):
         return utils.iurl(reverse('marcus-tag', args=[self.slug]), language)
