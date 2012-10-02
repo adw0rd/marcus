@@ -1,13 +1,13 @@
-# coding: utf-8
-
 MARCUS_PAGINATE_BY = 20
 MARCUS_ARTICLES_ON_INDEX = 10
 MARCUS_COMMENTS_ON_INDEX = 10
 MARCUS_COMMENT_EXCERPTS_ON_INDEX = 2
 MARCUS_ITEMS_IN_FEED = 20
 MARCUS_AUTHOR_ID = 1
-MARCUS_TITLE = 'Blog'
-MARCUS_SUBTITLE = 'Sample blog'
+
+from django.utils.translation import ugettext_lazy as _
+MARCUS_TITLE = _('Blog')
+MARCUS_SUBTITLE = _('Sample blog')
 
 MARCUS_SEARCH_FIELDS = [
     'slug', 'title_ru', 'title_en', 'text_ru', 'text_en',
