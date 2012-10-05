@@ -12,7 +12,7 @@ class AdminImageWidget(AdminFileWidget):
     def render(self, name, value, attrs=None):
         output = []
         if value:
-            url = value.url
+            url = value.url if hasattr(value, 'url') else value.name
             thumbnail_url = reverse('article-upload-image-preview', args=[value.instance.pk])
             output.append(
                 '<a href="{url}"><img src="{thumbnail_url}" /></a><br />'

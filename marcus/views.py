@@ -313,6 +313,7 @@ def article_upload_image_preview(request, object_id):
         return HttpResponse("Not a image", mimetype="text/html")
 
     buffer = StringIO.StringIO()
+    max_width = max_width if max_width < image.size[0] else image.size[0]
     height = int((float(image.size[1]) * float(max_width / float(image.size[0]))))
     image.resize((max_width, height), Image.ANTIALIAS).save(buffer, "PNG")
     return HttpResponse(buffer.getvalue(), mimetype="image/png")
