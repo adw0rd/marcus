@@ -39,6 +39,7 @@ and install additional requirements: https://github.com/adw0rd/marcus/blob/maste
 From sources:
 --------------
 ::
+
     git clone git://github.com/adw0rd/marcus.git marcus
     cd marcus
     virtualenv --no-site-packages venv
