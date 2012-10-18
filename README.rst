@@ -29,12 +29,11 @@ Screenshots:
 Installation
 ============
 
-Via pip:
+From PyPI:
 ------------
+::
 
-    pip install -e git://github.com/adw0rd/marcus.git#egg=marcus
-
-and install additional requirements: https://github.com/adw0rd/marcus/blob/master/requirements.txt
+    pip install marcus
 
 From sources:
 --------------
