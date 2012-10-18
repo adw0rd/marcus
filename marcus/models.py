@@ -2,7 +2,6 @@
 import re
 import pytils
 import markdown2
-import smorg_style.utils
 import pingdjack
 import subhub
 import itertools
@@ -272,7 +271,6 @@ class Article(models.Model):
 
     def html(self, language=None):
         html = markdown2.markdown(self._language_text(language), extras=settings.MARCUS_MARKDOWN_EXTRAS)
-        html = smorg_style.utils.usertext(html)
         return mark_safe(html)
     html.needs_language = True
 
@@ -344,7 +342,6 @@ class Comment(models.Model):
 
     def html(self):
         html = markdown2.markdown(self.text, extras=settings.MARCUS_MARKDOWN_EXTRAS)
-        html = smorg_style.utils.usertext(html)
         return mark_safe(html)
 
     def summary(self):
