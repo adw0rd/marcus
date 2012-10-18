@@ -7,8 +7,9 @@ httplib2>=0.7.4
 python-openid>=2.2.5
 markdown2>=2.0.1
 SubHub>=0.1.0
--e git://github.com/isagalaev/pingdjack.git#egg=pingdjack
--e git://github.com/isagalaev/scipio.git#egg=scipio
+
+http://github.com/isagalaev/scipio/tarball/master#egg=scipio-dev
+http://github.com/isagalaev/pingdjack/tarball/master#egg=pingdjack-dev
 
 # wordpress_importer command required:
 html2text>=3.200.3

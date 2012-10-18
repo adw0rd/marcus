@@ -1,15 +1,25 @@
+import re
 from setuptools import setup, find_packages
+
 from marcus import __version__
 
-# install_requires = []
-# try:
-#     requirements = open('requirements.txt')
-#     for line in requirements.readlines():
-#         line = line.strip()
-#         if line and not line.startswith('#'):
-#             install_requires.append(line)
-# finally:
-#     requirements.close()
+
+requirements = open('requirements.txt')
+install_requires = []
+dependency_links = []
+
+try:
+    for line in requirements.readlines():
+        line = line.strip()
+        if line and not line.startswith('#'):  # for inline  comments
+            if "#egg" in line:
+                names = re.findall('#egg=([^-]+)-', line)
+                install_requires.append(names[0])
+                dependency_links.append(line)
+            else:
+                install_requires.append(line)
+finally:
+    requirements.close()
 
 long_description = ""
 try:
@@ -31,7 +41,8 @@ setup(
     license='BSD',
     packages=find_packages(),
     zip_safe=False,
-    install_requires=['setuptools', ],
+    install_requires=install_requires,
+    dependency_links=dependency_links,
     include_package_data=True,
     classifiers=[
         "Environment :: Web Environment",
