@@ -62,6 +62,8 @@ Common settings:
     from django.utils.translation import ugettext_lazy as _
     MARCUS_TITLE = _('Blog')
     MARCUS_SUBTITLE = _('Sample blog')
+    
+    MARCUS_MARKDOWN_EXTRAS = ['code-friendly', 'wiki-tables']
 
     # Specify a fields which will used in search:
     MARCUS_SEARCH_FIELDS = [

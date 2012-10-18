@@ -9,6 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 MARCUS_TITLE = _('Blog')
 MARCUS_SUBTITLE = _('Sample blog')
 
+MARCUS_MARKDOWN_EXTRAS = ['code-friendly', 'wiki-tables']
+
 MARCUS_SEARCH_FIELDS = [
     'slug', 'title_ru', 'title_en', 'text_ru', 'text_en',
     'categories__slug', 'categories__title_ru', 'categories__title_en',
