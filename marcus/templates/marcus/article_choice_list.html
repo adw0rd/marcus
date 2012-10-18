@@ -1,0 +1,13 @@
+{% extends "base_with_sidebar.html"%}
+{% load i18n %}
+
+{% block title %}{% trans "Articles starts with slug" %} {{ slug }}{% endblock %}
+
+{% block content %}
+    <div class="articles">
+        <table>
+            {% include "marcus/blocks/articles.html" with articles=object_list %}
+        </table>
+    </div>
+{% endblock %}
+

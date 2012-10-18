@@ -1,4 +1,3 @@
-# coding: utf-8
 from django.contrib.sitemaps import FlatPageSitemap, GenericSitemap
 
 from marcus import models

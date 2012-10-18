@@ -1,0 +1,12 @@
+{% extends "base_with_sidebar.html"%}
+{% load static i18n %}
+
+{% block title %}{% trans "Tags" %}{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for tag in object_list %}
+            <li><a href="{{ tag.get_absolute_url }}">{{ tag }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

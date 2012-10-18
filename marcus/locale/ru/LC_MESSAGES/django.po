@@ -48,6 +48,9 @@ msgstr "Язык"
 msgid "Comments"
 msgstr "Комментарии"
 
+msgid "Comment"
+msgstr "Комментарий"
+
 msgid "Archive"
 msgstr "Архив"
 
@@ -68,3 +71,34 @@ msgstr "Заслуживающий внимания"
 
 msgid "Articles starts with slug"
 msgstr "Статьи со слагом на"
+
+msgid "Powered by"
+msgstr "Работает на"
+
+#: templates/base.html:32 templates/marcus/index.html:4
+msgid "Blog"
+msgstr "Блог"
+
+msgid "and"
+msgstr "и"
+
+msgid "Send to moderation"
+msgstr "Отправить на премодерацию"
+
+msgid "Read the article"
+msgstr "Читать статью дальше"
+
+msgid "Type something and press Enter"
+msgstr "Введите что-нибудь и нажмите Enter"
+
+msgid "Find"
+msgstr "Найти"
+
+msgid "Articles not found"
+msgstr "Статьи не найдены"
+
+msgid "Categories"
+msgstr "Рубрики"
+
+msgid "Tags"
+msgstr "Теги"

@@ -4,12 +4,14 @@ MARCUS_COMMENTS_ON_INDEX = 10
 MARCUS_COMMENT_EXCERPTS_ON_INDEX = 2
 MARCUS_ITEMS_IN_FEED = 20
 MARCUS_AUTHOR_ID = 1
+MARCUS_TAG_MINIMUM_ARTICLES = 3
 
 from django.utils.translation import ugettext_lazy as _
 MARCUS_TITLE = _('Blog')
 MARCUS_SUBTITLE = _('Sample blog')
 
 MARCUS_MARKDOWN_EXTRAS = ['code-friendly', 'wiki-tables']
+MARCUS_RETWEET_SUFFIX = "#marcus"
 
 MARCUS_SEARCH_FIELDS = [
     'slug', 'title_ru', 'title_en', 'text_ru', 'text_en',
@@ -52,4 +54,10 @@ SCIPIO_USE_CONTRIB_SITES = True
 AUTHENTICATION_BACKENDS = (
     'scipio.authentication.OpenIdBackend',
     'django.contrib.auth.backends.ModelBackend',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.request',
+    'marcus.context_processors.marcus_context',
 )

@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 from marcus.queryset import MarcusManager
 
@@ -46,7 +47,9 @@ class TagManager(CategoryManager):
             queryset = queryset.filter(count_articles_en__gt=0)
         else:
             order_by.extend(['-count_articles_ru', '-count_articles_en', ])
-            queryset = queryset.filter(models.Q(count_articles_ru__gt=3) | models.Q(count_articles_en__gt=3))
+            queryset = queryset.filter(
+                models.Q(count_articles_ru__gt=settings.MARCUS_TAG_MINIMUM_ARTICLES) |
+                models.Q(count_articles_en__gt=settings.MARCUS_TAG_MINIMUM_ARTICLES))
         return queryset.order_by(*order_by)
 
 

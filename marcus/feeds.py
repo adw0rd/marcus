@@ -196,7 +196,8 @@ class Comment(CommentFeed, ContentFeed):
 class ArticleComment(CommentFeed, ContentFeed):
     def get_object(self, request, year, month, day, slug, language):
         translation.activate(language or 'ru')
-        return get_object_or_404(models.Article,
+        return get_object_or_404(
+            models.Article,
             published__year=year,
             published__month=month,
             published__day=day,
@@ -213,3 +214,13 @@ class ArticleComment(CommentFeed, ContentFeed):
 
     def get_query_set(self, article, language):
         return models.Comment.public.language(language).filter(article=article).order_by('-created')
+
+
+class ArticleCommentShort(ArticleComment):
+    def get_object(self, request, year, slug, language):
+        translation.activate(language or 'ru')
+        return get_object_or_404(
+            models.Article,
+            published__year=year,
+            slug=slug,
+        ), language

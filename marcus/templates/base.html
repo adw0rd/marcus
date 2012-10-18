@@ -1,0 +1,68 @@
+{% load static i18n marcus_tags %}<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}{% trans "Main page" %}{% endblock %} / {% trans MARCUS_TITLE %}</title>
+        <meta name="keywords" content="{% block keywords %}{% endblock %}">
+        <meta name="description" content="{% block description %}{% endblock %}">
+        <meta property="og:title" content="{% block og_title %}{% endblock %}"/>
+        <meta property="og:image" content="{% block og_image %}{% endblock %}"/>
+        <meta property="og:description" content="{% block og_description %}{% endblock %}"/>
+        {% block meta %}{% endblock %}
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link rel="stylesheet" href="{% static "/static/screen.css" %}" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <style type="text/css">{% block css %}{% endblock %}</style>
+        <script type="text/javascript">{% block javascript %}{% endblock %}</script>
+    </head>
+    <body>
+        <div class="header">
+            {% block header %}
+                <div class="site-search">
+                    {% include "marcus/blocks/search.html" %}
+                    <div class="site-langs">
+                        {% if language == "en" %}
+                            <a href="{% url marcus-index %}">Toggle to Russian and English articles</a>
+                        {% else %}
+                            <a href="{% url marcus-index "en" %}">Toggle to English articles</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="site-title">
+                    <h1>
+                        <a href="{% iurl marcus-index %}">{% trans MARCUS_TITLE %}</a>
+                    </h1>
+                </div>
+            {% endblock %}
+        </div>
+        <div style="clear:both;"></div>
+        <div class="menu">
+            {% block feeds %}
+                <div style="float:right">
+                    <a href="{% iurl marcus-feed %}">
+                        <img src="{% static "/static/images/rss.jpg" %}" />
+                    </a>
+                </div>
+            {% endblock %}
+            <div class="site-menu">
+                <ul>
+                    <li><a href="{% iurl marcus-index %}">{% trans "Blog" %}</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container">
+            {% block container %}{% endblock %}
+        </div>
+        <div class="footer">
+            {% block footer %}
+                <hr />
+                <div>
+                    {% trans "Powered by" %} <a href="https://github.com/adw0rd/marcus">marcus</a>
+                    {% trans "and" %} <a href="http://djangoproject.com/">django</a>!
+                </div>
+            {% endblock %}
+        </div>
+    </body>
+</html>

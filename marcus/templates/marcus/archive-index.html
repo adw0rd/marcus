@@ -1,0 +1,18 @@
+{% extends "base_with_sidebar.html"%}
+{% load i18n l10n %}
+
+{% block title %}{% trans "Archive" %}{% endblock %}
+
+{% block content %}
+    {% regroup months by year as year_list %}
+    <div>
+        {% for year in year_list %}
+            <h3>{{ year.grouper }}</h3>
+            <ul>
+                {% for item in year.list %}
+                    <li><a href="{% iurl marcus-archive item.year item.month %}">{{ item|date:"F" }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,14 +1,16 @@
 {% extends "base_with_sidebar.html"%}
-{% load static i18n %}
+{% load i18n %}
 
-{% block title %}{{ category.title }}{% endblock %}
+{% block title %}{% trans "Archive for" %} {{ month|date:"F"|default:"" }} {{ year }}{% endblock %}
 
 {% block content %}
+    <div class="articles">
         <table>
             <tr>
                 <td class="article-published"><h2>{{ year }}</h2></td>
                 <td></td>
             </tr>
-           {% include "marcus/blocks/articles.html" with articles=object_list %}
+            {% include "marcus/blocks/articles.html" with articles=object_list %}
         </table>
+    </div>
 {% endblock %}

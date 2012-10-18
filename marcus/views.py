@@ -1,20 +1,22 @@
 # coding: utf-8
-import pingdjack
 import scipio
+import pingdjack
 from datetime import datetime
 from scipio.forms import AuthForm
 
+from django import http
+from django.db.models import Q
 from django.core.paginator import Paginator, InvalidPage
+from django.core.urlresolvers import reverse
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, render, redirect
-from django import http
 from django.utils import translation, simplejson
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.http import HttpResponse
 
-from marcus import models, forms, antispam
+from marcus import models, forms, antispam, utils
 
 
 def object_list(request, queryset, template_name, context):
@@ -52,9 +54,12 @@ def index(request, language):
     comments = list(models.Comment.public.language(language).order_by('-created')[:settings.MARCUS_COMMENTS_ON_INDEX])
     for comment in comments[:settings.MARCUS_COMMENT_EXCERPTS_ON_INDEX]:
         comment.show_excerpt = True
+
     return render(request, 'marcus/index.html', {
         'language': language,
         'essentials': models.Category.objects.filter(essential=True),
+        'categories': models.Category.objects.popular(language),
+        'tags': models.Tag.objects.popular(language),
         'articles': articles,
         'comments': comments,
     })
@@ -62,7 +67,8 @@ def index(request, language):
 
 def category_index(request, language):
     translation.activate(language or 'ru')
-    return object_list(request,
+    return object_list(
+        request,
         models.Category.objects.language(language),
         'marcus/category_list.html',
         {'language': language},
@@ -72,7 +78,8 @@ def category_index(request, language):
 def category(request, slug, language):
     translation.activate(language or 'ru')
     category = get_object_or_404(models.Category, slug=slug)
-    return object_list(request,
+    return object_list(
+        request,
         models.Article.public.language(language).filter(categories=category),
         'marcus/category.html',
         {
@@ -84,7 +91,8 @@ def category(request, slug, language):
 
 def tag_index(request, language):
     translation.activate(language or 'ru')
-    return render(request,
+    return render(
+        request,
         'marcus/tag_list.html',
         {'language': language, 'object_list': models.Tag.objects.language(language)},
     )
@@ -93,7 +101,8 @@ def tag_index(request, language):
 def tag(request, slug, language):
     translation.activate(language or 'ru')
     tag = get_object_or_404(models.Tag, slug=slug)
-    return object_list(request,
+    return object_list(
+        request,
         models.Article.public.language(language).filter(tags=tag),
         'marcus/tag.html',
         {
@@ -122,7 +131,8 @@ def archive(request, year, month, language):
         queryset = queryset.filter(published__year=year, published__month=month)
     else:
         queryset = queryset.filter(published__year=year)
-    return object_list(request,
+    return object_list(
+        request,
         queryset,
         'marcus/archive.html',
         {
@@ -133,6 +143,12 @@ def archive(request, year, month, language):
     )
 
 
+def archive_short(request, year, language):
+    args = [arg for arg in (year, language, ) if arg]
+    url = reverse('marcus-archive', args=args)
+    return redirect(url)
+
+
 def find_article(request, slug):
     translation.activate('ru')
     objs = models.Article.public.filter(slug__startswith=slug)
@@ -141,7 +157,8 @@ def find_article(request, slug):
     if len(objs) == 1:
         return redirect(objs[0])
     else:
-        return object_list(request,
+        return object_list(
+            request,
             objs,
             'marcus/article_choice_list.html',
             {'slug': slug, 'language': None},
@@ -190,7 +207,10 @@ def article(request, year, month, day, slug, language):
         if 'unapproved' in request.session:
             del request.session['unapproved']
 
-    return render(request, 'marcus/article.html', {
+    return render(
+        request,
+        'marcus/article.html',
+        {
             'article': models.Translation(obj, language),
             'comments': comments,
             'noteworthy_count': comments.filter(noteworthy=True).count(),
@@ -198,6 +218,54 @@ def article(request, year, month, day, slug, language):
             'unapproved': unapproved,
             'language': language,
         })
+
+
+def article_short(request, year, slug, language):
+    guest_name = request.session.get('guest_name', '')
+    obj = get_object_or_404(models.Article, published__year=year, slug=slug)
+    translation.activate(language or obj.only_language() or 'ru')
+    if request.method == 'POST':
+        form = forms.CommentForm(request.user, get_ip(request), obj, language, request.POST)
+        if form.is_valid():
+            guest_name = request.POST.get('name', '')
+            request.session['guest_name'] = guest_name
+            form.cleaned_data['text'] = form.cleaned_data['text'].replace('script', u'sсript')
+            comment = form.save()
+            return _process_new_comment(request, comment, language, True)
+    else:
+        form = forms.CommentForm(article=obj, language=language)
+
+    comments = models.Comment.common.language(language)\
+        .select_related('author', 'author__scipio_profile', 'article')\
+        .filter(article=obj, type="comment")\
+        .filter(Q(guest_name=guest_name) | ~Q(approved=None))\
+        .order_by('created', 'approved')
+
+    unapproved = False
+    try:
+        unapproved_pk = request.session.get('unapproved')
+        if unapproved_pk:
+            unapproved = models.Comment.objects.get(pk=unapproved_pk, approved=None)
+    except models.Comment.DoesNotExist:
+        if 'unapproved' in request.session:
+            del request.session['unapproved']
+
+    retweet_url = u'http://twitter.com/home/?status={title}%20{url}%20{suffix}'.format(
+        title=obj.title(),
+        url=utils.absolute_url(utils.iurl(reverse('marcus-article-short', args=[obj.published.year, obj.slug, ]), language)),
+        suffix=settings.MARCUS_RETWEET_SUFFIX.replace('@', '%40')
+    )
+
+    return render(request, 'marcus/article.html', {
+        'article': models.Translation(obj, language),
+        'comments': comments,
+        # 'noteworthy_count': comments.filter(noteworthy=True).count(),
+        'form': not obj.comments_hidden and form,
+        'unapproved': unapproved,
+        'language': language,
+        'guest_name': guest_name,
+        'retweet_url': retweet_url,
+    })
 
 
 @superuser_required
@@ -263,7 +331,8 @@ def delete_spam(request):
 
 @superuser_required
 def spam_queue(request):
-    return object_list(request,
+    return object_list(
+        request,
         models.Comment.suspected.select_related(),
         'marcus/spam_queue.html',
         {}
@@ -332,7 +401,8 @@ def search(request, language):
     language = search_language
     translation.activate(language or 'ru')
 
-    return object_list(request,
+    return object_list(
+        request,
         models.Article.public.language(language).search(search_query),
         'marcus/search.html',
         {

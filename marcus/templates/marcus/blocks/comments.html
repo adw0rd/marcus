@@ -1,0 +1,27 @@
+{% load i18n %}
+<ul>
+    {% for comment in comments %}
+        <li class="alt {% if forloop.counter0|divisibleby:"2" %}alt1{% else %}alt2{% endif %}">
+            <a name="comment-{{ comment.pk }}"></a>
+            <div class="comment-meta">
+                {% if comment.noteworthy %}<i class="smorg_star" title="{% trans "Noteworthy comment" %}"></i>{% endif %}
+                {% if not comment.approved %}{% trans "Comment is awaiting approval" %}{% endif %}
+                <span class="comment-date-approved">
+                    <a href="{{ comment.get_absolute_url }}">{{ comment.created }}</a>
+                </span>
+            </div>
+            <div class="comment-username">
+                {% spaceless %}
+                {% if comment.author_url %}
+                    <a href="{{ comment.author_url }}">{{ comment.author_str }}</a>
+                {% else %}
+                    {{ comment.author_str }}
+                {% endif %}
+                {% endspaceless %}
+            </div>
+            <div class="comment-text">
+                {{ comment.html }}
+            </div>
+        </li>
+    {% endfor %}
+</ul>

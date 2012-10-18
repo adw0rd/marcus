@@ -1,0 +1,31 @@
+{% load i18n l10n marcus_tags %}
+{% for article in articles %}
+    {% with article|translate:language as article %}
+        <tr>
+            <td class="article-published">
+                {{ article.published.date|localize }}
+            </td>
+            <td class="article-title">
+                <a href="{% iurl marcus-article article.published.year article.published.month article.published.day article.slug %}">{{ article.title }}</a>
+            </td>
+        </tr>
+        {% if forloop.first and forloop.parentloop.first %}
+            <tr>
+                <td colspan="2">
+                    <div class="article-text">
+                        {{ article.intro }}
+                    </div>
+                    <tt class="more">
+                        <a href="{% iurl marcus-article article.published.year article.published.month article.published.day article.slug %}#more">{% trans "Read the article" %} →</a>
+                    </tt>
+                    <br />
+                    <br />
+                </td>
+            </tr>
+        {% endif %}
+    {% endwith %}
+{% empty %}
+    <tr>
+        <td colspan="2">{% trans "Articles not found" %}</td>
+    </tr>
+{% endfor %}

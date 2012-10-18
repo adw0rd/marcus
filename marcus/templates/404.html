@@ -1,0 +1,11 @@
+{% extends "base_without_sidebar.html" %}
+{% load i18n static %}
+
+{% block title %}404. {% trans "Page not found" %}{% endblock %}
+
+{% block content %}
+    <img src="{% static "/static/images/piter-404.jpg" %}" alt="404" />
+{% endblock %}
+
+{% block feeds %}{% endblock %}
+{% block counters %}{% endblock %}

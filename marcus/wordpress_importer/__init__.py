@@ -1,6 +1,3 @@
-# coding: utf-8
-
-
 class BasePipeline(object):
     replaced_data = {}
 

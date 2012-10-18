@@ -1,0 +1,46 @@
+{% extends "base_with_sidebar.html"%}
+{% load static i18n marcus_tags %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+    {% with article|translate:language as article %}
+        <div class="article-title">
+            <h1><a href="{% iurl marcus-article article.published.year article.published.month article.published.day article.slug %}">{{ article.title }}</a></h1>
+        </div>
+        <div class="article-text">
+            {{ article.html }}
+        </div>
+
+        <hr />
+        <div class="article-meta">
+            <div style="float:right">{{ article.published.date }}</div>
+            <div>{% trans "Categories" %}: {{ article.categories_links|safeseq|join:", " }}</div>
+            <div style="float:right"><a id="retweet-article" href="{{ retweet_url }}">Retweet</a></div>
+            <div>{% trans "Tags" %}: {{ article.tags_links|safeseq|join:", " }}</div>
+        </div>
+
+        <div class="comments">
+            <h2>{% trans "Comments" %}
+                <a href="{% iurl marcus-article-comments-feed-short article.published.year|default:3000 article.slug %}">
+                    <img src="{% static "/static/images/smorg_feed.png" %}" />
+                </a>
+            </h2>
+            {% include "marcus/comments.html" %}
+        </div>
+
+        {# sunburst.css ir_black.css sunburst.css default.css #}
+        <link rel="stylesheet" href="{% static "/static/highlight.js/styles/monokai.css" %}" />
+        <script type="text/javascript" src="{% static "/static/highlight.js/highlight.pack.js" %}"></script>
+        <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+
+        <script type="text/javascript">
+            document.getElementById('retweet-article').onclick = function() {
+                window.open(this.href, '',
+                   'top=50%,left=50%,width=600,height=300,resizable=1',
+                   'scrolling=no', 'fullscreen=yes,');
+                return false;
+            }
+        </script>
+    {% endwith %}
+{% endblock %}

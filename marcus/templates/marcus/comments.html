@@ -1,0 +1,46 @@
+{% load i18n marcus_tags %}
+{% include "marcus/blocks/comments.html" %}
+
+<a name="comment-form"></a>
+{% if form %}
+    <form action="{% iurl marcus-article article.published.year article.published.month article.published.day article.slug %}#comment-form" method="post" id="comment-form">
+        <div class="comment-form-input">
+            {% if request.user.is_authenticated %}
+                <div style="float:left;margin-right:5px">{{ request.user }}</div>
+            {% else %}
+                <input id="{{ form.name.auto_id }}" name="{{ form.name.name }}" placeholder="{{ form.name.label }}"
+                       value="{{ form.name.value|default:guest_name }}"
+                       style="float:left;margin-right:5px"
+                       class="{% if form.errors.name %}form-error{% endif %}" />
+                {% for error in form.errors.name %}
+                    {{ error }}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="comment-form-input">
+            <textarea id="{{ form.text.auto_id }}" name="{{ form.text.name }}" placeholder="{{ form.text.label }}"
+                      class="{% if form.errors.text %}form-error{% endif %}">{{ form.text.value|default:"" }}</textarea>
+            {% for error in form.errors.text %}
+                {{ error }}
+            {% endfor %}
+        </div>
+        <input type="submit" value="{% trans "Send to moderation" %}" />
+        {% comment %}
+        {% if form.errors %}
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li><span class="label label-important">Field {{ field }}:</span> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endcomment %}
+    </form>
+    <script type="text/javascript">
+        var form = document.getElementById('comment-form');
+        form.innerHTML = form.innerHTML + "{% csrf_token %}";
+    </script>
+{% else %}
+    <p>{% trans "The article is closed for comments" %}</p>
+{% endif %}

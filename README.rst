@@ -58,12 +58,15 @@ Common settings:
     MARCUS_ITEMS_IN_FEED = 20
     MARCUS_AUTHOR_ID = 1
     
+    MARCUS_TAG_MINIMUM_ARTICLES = 3
+    
     # Specify blog names:
     from django.utils.translation import ugettext_lazy as _
     MARCUS_TITLE = _('Blog')
     MARCUS_SUBTITLE = _('Sample blog')
     
     MARCUS_MARKDOWN_EXTRAS = ['code-friendly', 'wiki-tables']
+    MARCUS_RETWEET_SUFFIX = "#marcus"
 
     # Specify a fields which will used in search:
     MARCUS_SEARCH_FIELDS = [
@@ -86,6 +89,28 @@ Common settings:
         'scipio.authentication.OpenIdBackend',
         'django.contrib.auth.backends.ModelBackend',
     )
+    
+    TEMPLATE_CONTEXT_PROCESSORS = (
+        'django.contrib.auth.context_processors.auth',
+        'django.core.context_processors.request',
+        'marcus.context_processors.marcus_context',
+    )
+    
+    INSTALLED_APPS = (
+        'django.contrib.auth',
+        'django.contrib.admin',
+        'django.contrib.admindocs',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.sites',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'django.contrib.flatpages',
+        'marcus',
+        'subhub',
+        'scipio',
+    )
+
 
 Wordpress importer settings:
 -----------------------------
@@ -115,7 +140,6 @@ It has a built-in pipelines for additional filtering data.
         ),
     }
 
-
 Example of the ``urls.py``:
 -----------------------------
 ::
@@ -126,13 +150,14 @@ Example of the ``urls.py``:
     
     admin.autodiscover()
     
-    urlpatterns = patterns('',
-        url(r'^', include('marcus.urls')),
-        url(r'^', include('subhub.urls')),
-        url(r'^', include('scipio.urls')),
+    urlpatterns = patterns(
+        '',
         url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
         url(r'^admin/', include(admin.site.urls)),
         url(r'^sitemap', include('marcus.sitemap_urls')),
+        url(r'^', include('marcus.urls')),
+        url(r'^', include('subhub.urls')),
+        url(r'^', include('scipio.urls')),
     )
     
     urlpatterns += staticfiles_urlpatterns()

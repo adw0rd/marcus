@@ -1,0 +1,12 @@
+{% extends "base_without_sidebar.html"%}
+{% load static i18n %}
+
+{% block title %}{{ tag.title }}{% endblock %}
+
+{% block content %}
+    <div class="articles">
+        <table>
+           {% include "marcus/blocks/articles.html" with articles=object_list %}
+        </table>
+    </div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base_with_sidebar.html" %}
+{% load i18n static marcus_tags %}
+
+{% block title %}{% trans "Blog" %}{% endblock %}
+
+{% block content %}
+    <div class="articles">
+        {% regroup articles by published.year as articles_list %}
+        {% for item in articles_list %}
+            <table>
+                <tr>
+                    <td class="article-published"><h2>{{ item.grouper }}</h2></td>
+                    <td></td>
+                </tr>
+                {% include "marcus/blocks/articles.html" with articles=item.list %}
+            </table>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+    {% if categories %}
+        <h3>{% trans "Categories" %}</h3>
+        <ul class="categories-list">
+            {% for category in categories %}
+                {% with category|translate:language as category %}
+                    <li><a href="{{ category.get_absolute_url }}">{{ category.title }}</a></li>
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% if tags %}
+        <h3>{% trans "Tags" %}</h3>
+        <ul class="tags-list">
+            {% for tag in tags %}
+                {% with tag|translate:language as tag %}
+                    <li><a style="font-size:{{ tag.size }};color:{{ tag.color }};" href="{{ tag.get_absolute_url }}">{{ tag.title }}</a></li>
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

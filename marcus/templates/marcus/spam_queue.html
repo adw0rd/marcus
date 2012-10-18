@@ -1,0 +1,17 @@
+{% extends "base_with_sidebar.html"%}
+{% load i18n %}
+
+{% block title %}{% trans "Blog" %}{% endblock %}
+
+{% block content %}
+    <div class="spam-queue">
+        <h2>{% trans "Spam queue" %}</h2>
+        {% include "marcus/blocks/comments.html" with comments=object_list %}
+    </div>
+{% endblock %}
+
+{% block css %}
+    .spam-queue li {
+        overflow: hidden;
+    }
+{% endblock %}

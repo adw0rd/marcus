@@ -1,0 +1,12 @@
+{% load i18n marcus_tags %}
+
+<form action="{% iurl marcus-search %}" method="GET">
+    <input type="text" class="query-string" name="s" value="{{ request.GET.s }}" placeholder="{% trans "Type something and press Enter" %}" />
+    <input type="submit" value="{% trans "Find" %}" />
+    {% for key, value in available_search_languages %}
+        <label for="{{ key }}">
+            <input type="radio" id="{{ key }}" name="l" value="{{ key }}"
+                   {% if search_language == key %}checked="chaecked"{% endif %} /> {{ value }}
+        </label>
+    {% endfor %}
+</form>

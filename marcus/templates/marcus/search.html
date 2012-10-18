@@ -1,0 +1,15 @@
+{% extends "base_without_sidebar.html"%}
+{% load i18n %}
+
+{% block title %}{% trans "Search for" %} {{ search_query }}{% endblock %}
+
+{% block content %}
+    <div class="search-block">
+         {% include "marcus/blocks/search.html" with available_search_languages=search_languages %}
+    </div>
+    <div class="articles">
+        <table>
+            {% include "marcus/blocks/articles.html" with articles=object_list %}
+        </table>
+    </div>
+{% endblock %}

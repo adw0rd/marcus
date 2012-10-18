@@ -1,4 +1,3 @@
-# coding: utf-8
 import re
 import pytils
 import markdown2
@@ -164,7 +163,7 @@ class Tag(models.Model):
     size.needs_language = True
 
     def color(self):
-        return "#b2b2b2"
+        return "#664e4e"
 
 
 class Article(models.Model):
@@ -294,7 +293,7 @@ class Article(models.Model):
     tags_links.needs_language = True
 
 COMMENT_TYPES = (
-    ('comment', u'Комментарий'),
+    ('comment', _('Comment')),
     ('pingback', u'Pingback'),
 )
 
