@@ -54,7 +54,7 @@ msgstr "Архив"
 msgid "Archive for"
 msgstr "Архив за"
 
-msgid "Article is closed for comments"
+msgid "The article is closed for comments"
 msgstr "Статья закрыта для комментирования"
 
 msgid "Comment is awaiting approval"

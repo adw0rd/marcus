@@ -29,6 +29,7 @@ class TimedBooleanFilter(admin.FieldListFilter):
 admin.site.register(
     models.Category,
     list_display=['title_ru', 'title_en', 'essential', 'parent'])
+
 admin.site.register(
     models.Tag,
     list_display=['slug', 'title_ru', 'count_articles_ru', 'title_en', 'count_articles_en'],
