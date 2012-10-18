@@ -1,13 +1,11 @@
 import re
 from setuptools import setup, find_packages
-
 from marcus import __version__
 
-
+# INSTALLATION A PACKAGES FROM requirements.txt
 requirements = open('requirements.txt')
 install_requires = []
 dependency_links = []
-
 try:
     for line in requirements.readlines():
         line = line.strip()
@@ -21,6 +19,7 @@ try:
 finally:
     requirements.close()
 
+# LONG DESCRIPTION
 long_description = ""
 try:
     readme = open("README.rst")
@@ -29,6 +28,7 @@ try:
 except:
     pass
 
+# SETUP
 setup(
     name='marcus',
     version=__version__,
@@ -43,6 +43,7 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     dependency_links=dependency_links,
+    package_data={'': ['requirements.txt']},
     include_package_data=True,
     classifiers=[
         "Environment :: Web Environment",
