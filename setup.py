@@ -30,7 +30,7 @@ except:
 
 # SETUP
 setup(
-    name='marcus',
+    name='django-marcus',
     version=__version__,
     description="Bilingual blog on Django",
     long_description=long_description,

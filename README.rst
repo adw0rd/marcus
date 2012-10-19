@@ -37,23 +37,10 @@ Screenshots:
 Installation
 =============
 
-From PyPI:
-------------
-http://pypi.python.org/pypi/marcus
+http://pypi.python.org/pypi/django-marcus
 ::
 
-    pip install marcus
-
-From sources:
---------------
-https://github.com/adw0rd/marcus
-::
-
-    git clone git://github.com/adw0rd/marcus.git marcus
-    cd marcus
-    virtualenv --no-site-packages venv
-    source venv/bin/activate
-    pip install -r requirements.txt
+    pip install django-marcus
 
 
 Configuration
@@ -206,7 +193,7 @@ Installation guide for new projects:
 
     django-admin.py startproject project
     cd project
-    pip install marcus
+    pip install django-marcus
     ... Copy the settings to settings.py and you urls to you urls.py described above ...
     python ./manage.py syncdb
     python ./manage.py createsuperuser
