@@ -39,12 +39,14 @@ Installation
 
 From PyPI:
 ------------
+http://pypi.python.org/pypi/marcus
 ::
 
     pip install marcus
 
 From sources:
 --------------
+https://github.com/adw0rd/marcus
 ::
 
     git clone git://github.com/adw0rd/marcus.git marcus
