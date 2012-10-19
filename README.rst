@@ -198,3 +198,22 @@ It has a built-in pipelines for additional filtering data.
             'www.my-old-blog-on-wordpress.org',
         ),
     }
+
+
+Installation guide for new projects:
+======================================
+::
+
+    django-admin.py startproject project
+    cd project
+    pip install marcus
+    ... Copy the settings to settings.py and you urls to you urls.py described above ...
+    python ./manage.py syncdb
+    python ./manage.py createsuperuser
+    python ./manage.py runserver 8000
+
+Go to https://akismet.com/signup/, get a ``key`` and enter it here::
+
+    SCIPIO_AKISMET_KEY = ''
+
+After installation, going to http://localhost:8000/admin/scipio/profile/ and create you profile.
