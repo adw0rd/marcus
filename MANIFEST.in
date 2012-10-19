@@ -1,2 +1,4 @@
 include requirements.txt
-recursive-include data *
+recursive-include marcus/static *
+recursive-include marcus/templates *
+recursive-include marcus/locale *
