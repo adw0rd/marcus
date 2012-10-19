@@ -12,11 +12,11 @@
             </div>
             <div class="comment-username">
                 {% spaceless %}
-                {% if comment.author_url %}
-                    <a href="{{ comment.author_url }}">{{ comment.author_str }}</a>
-                {% else %}
-                    {{ comment.author_str }}
-                {% endif %}
+                    {% if comment.author_url %}
+                        <a href="{{ comment.author_url }}">{{ comment.author_str }}</a>
+                    {% else %}
+                        {{ comment.author_str }}
+                    {% endif %}
                 {% endspaceless %}
             </div>
             <div class="comment-text">

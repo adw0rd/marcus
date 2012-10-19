@@ -27,12 +27,12 @@ class TimedBooleanFilter(admin.FieldListFilter):
 
 admin.site.register(
     models.Category,
-    list_display=['title_ru', 'title_en', 'essential', 'parent'])
+    list_display=('title_ru', 'title_en', 'essential', 'parent', ))
 
 admin.site.register(
     models.Tag,
-    list_display=['slug', 'title_ru', 'count_articles_ru', 'title_en', 'count_articles_en'],
-    search_fields=['title_ru', 'title_en'])
+    list_display=('slug', 'title_ru', 'count_articles_ru', 'title_en', 'count_articles_en', ),
+    search_fields=('title_ru', 'title_en', ))
 
 
 class ArticleUploadForm(forms.ModelForm):
@@ -46,14 +46,14 @@ class ArticleUploadInlineAdmin(admin.TabularInline):
 
 class ArticleAdmin(mixins.ArticleTextSizeAdminMixin, admin.ModelAdmin):
     save_on_top = True
-    list_display = ['slug', 'title', 'text_size', 'is_published']
-    list_filter = [('published', TimedBooleanFilter)]
-    search_fields = ['slug', 'title_ru', 'title_en', 'text_ru', 'text_en', 'categories__slug', 'categories__title_ru', 'categories__title_en']
-    ordering = ['-published']
-    inlines = [ArticleUploadInlineAdmin]
+    list_display = ('slug', 'title', 'text_size', 'is_published', )
+    list_filter = (('published', TimedBooleanFilter), )
+    search_fields = ('slug', 'title_ru', 'title_en', 'text_ru', 'text_en', 'categories__slug', 'categories__title_ru', 'categories__title_en', )
+    ordering = ('-published', )
+    inlines = (ArticleUploadInlineAdmin, )
 
-    fields = ['slug', 'title_ru', 'text_ru', 'title_en', 'text_en', 'categories', 'tags', 'comments_hidden', 'published']
-    filter_horizontal = ['categories', 'tags', ]
+    fields = ('slug', 'title_ru', 'text_ru', 'title_en', 'text_en', 'categories', 'tags', 'comments_hidden', 'published', )
+    filter_horizontal = ('categories', 'tags', )
 
     class form(forms.ModelForm):
         class Meta:
@@ -80,13 +80,13 @@ admin.site.register(models.ArticleUpload, ArticleUploadAdmin)
 
 class CommentAdmin(admin.ModelAdmin):
     save_on_top = True
-    actions = [actions.make_approved]
-    list_display = ['pk', 'article', 'author_str', 'type', 'created_str', 'is_approved']
-    list_filter = [('approved', TimedBooleanFilter)]
-    ordering = ['-created']
-    select_related = ['article']
-    raw_id_fields = ['author', 'article']
-    search_fields = ['article__slug', 'author__username', 'author__scipio_profile__openid']
+    actions = (actions.make_approved, )
+    list_display = ('pk', 'article', 'author_str', 'type', 'created_str', 'is_approved', )
+    list_filter = (('approved', TimedBooleanFilter), )
+    ordering = ('-created', )
+    select_related = ('article', )
+    raw_id_fields = ('author', 'article', )
+    search_fields = ('article__slug', 'author__username', 'author__scipio_profile__openid', )
 
     def is_approved(self, obj):
         return bool(obj.approved)
