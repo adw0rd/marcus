@@ -188,41 +188,45 @@ def _process_new_comment(request, comment, language, check_login):
     return redirect(models.Translation(comment, language))
 
 
-def article(request, year, month, day, slug, language):
-    obj = get_object_or_404(models.Article, published__year=year, published__month=month, published__day=day, slug=slug)
-    translation.activate(language or obj.only_language() or 'ru')
-    if request.method == 'POST':
-        form = forms.CommentForm(request.user, get_ip(request), obj, language, request.POST)
-        if form.is_valid():
-            comment = form.save()
-            return _process_new_comment(request, comment, language, True)
-    else:
-        form = forms.CommentForm(article=obj, language=language)
-
-    comments = models.Comment.public.language(language).filter(article=obj).select_related('author', 'author__scipio_profile')
-    try:
-        unapproved = models.Comment.objects.get(pk=request.session.get('unapproved'), approved=None)
-    except models.Comment.DoesNotExist:
-        unapproved = False
-        if 'unapproved' in request.session:
-            del request.session['unapproved']
-
-    return render(
-        request,
-        'marcus/article.html',
-        {
-            'article': models.Translation(obj, language),
-            'comments': comments,
-            'noteworthy_count': comments.filter(noteworthy=True).count(),
-            'form': not obj.comments_hidden and form,
-            'unapproved': unapproved,
-            'language': language,
-        })
-
+# def article(request, year, month, day, slug, language):
+#     obj = get_object_or_404(models.Article, published__year=year, published__month=month, published__day=day, slug=slug)
+#     translation.activate(language or obj.only_language() or 'ru')
+#     if request.method == 'POST':
+#         form = forms.CommentForm(request.user, get_ip(request), obj, language, request.POST)
+#         if form.is_valid():
+#             comment = form.save()
+#             return _process_new_comment(request, comment, language, True)
+#     else:
+#         form = forms.CommentForm(article=obj, language=language)
+#
+#     comments = models.Comment.public.language(language).filter(article=obj).select_related('author', 'author__scipio_profile')
+#     try:
+#         unapproved = models.Comment.objects.get(pk=request.session.get('unapproved'), approved=None)
+#     except models.Comment.DoesNotExist:
+#         unapproved = False
+#         if 'unapproved' in request.session:
+#             del request.session['unapproved']
+#
+#     return render(
+#         request,
+#         'marcus/article.html',
+#         {
+#             'article': models.Translation(obj, language),
+#             'comments': comments,
+#             'noteworthy_count': comments.filter(noteworthy=True).count(),
+#             'form': not obj.comments_hidden and form,
+#             'unapproved': unapproved,
+#             'language': language,
+#         })
 
 def article_short(request, year, slug, language):
-    guest_name = request.session.get('guest_name', '')
     obj = get_object_or_404(models.Article, published__year=year, slug=slug)
+    return article(request, year, obj.published.month, obj.published.day, slug, language)
+
+
+def article(request, year, month, day, slug, language):
+    obj = get_object_or_404(models.Article, published__year=year, published__month=month, published__day=day, slug=slug)
+    guest_name = request.session.get('guest_name', '')
     translation.activate(language or obj.only_language() or 'ru')
     if request.method == 'POST':
         form = forms.CommentForm(request.user, get_ip(request), obj, language, request.POST)
