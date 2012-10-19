@@ -4,11 +4,6 @@
 {% block title %}{% trans flatpage.title %}{% endblock %}
 
 {% block content %}
-<h1>{% trans flatpage.title %}</h1>
-<p>{{ flatpage.content|markdown }}</p>
-{% endblock %}
-
-{% block sidebar %}
-<div class="box">
-</div>
+    <h1>{% trans flatpage.title %}</h1>
+    <p>{{ flatpage.content|markdown }}</p>
 {% endblock %}
