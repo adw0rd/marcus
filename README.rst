@@ -61,6 +61,17 @@ Configuration
 
 Add to ``settings.py``::
 
+    import os
+    import marcus
+    
+    PROJECT_ROOT = os.path.dirname(__file__)
+    PROJECT_NAME = os.path.basename(PROJECT_ROOT)
+    STORAGE_ROOT = os.path.join('/storage', PROJECT_NAME)
+    MARCUS_ROOT = os.path.dirname(marcus.__file__)
+    LOCALE_PATHS = (
+        os.path.join(MARCUS_ROOT, 'locale'),
+    )
+
     MARCUS_PAGINATE_BY = 20
     MARCUS_ARTICLES_ON_INDEX = 10
     MARCUS_COMMENTS_ON_INDEX = 10
@@ -87,7 +98,7 @@ Add to ``settings.py``::
     ]
     
     # OpenID sessions dir. OpenID authentication will not work without it.
-    SCIPIO_STORE_ROOT = '/path/to/scipio'
+    SCIPIO_STORE_ROOT = os.path.join(STORAGE_ROOT, 'scipio')
     
     # URL passed to OpenID-provider to identify site that requests authentication.
     # Should not end with '/'.
@@ -111,6 +122,12 @@ Add to ``settings.py``::
         'django.core.context_processors.request',
         'marcus.context_processors.marcus_context',
     )
+
+    MEDIA_ROOT = os.path.join(STORAGE_ROOT, 'media')
+    MEDIA_URL = '/media/'
+    
+    STATIC_ROOT = os.path.join(STORAGE_ROOT, 'static')
+    STATIC_URL = '/static/'
     
     INSTALLED_APPS = (
         'django.contrib.auth',
