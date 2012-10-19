@@ -245,21 +245,21 @@ tt.more {
     }
 
 blockquote.download {
-    background: url("{% static "/static/images/download.gif" %}") no-repeat scroll left top #D4FFC6;
+    background: url("/static/images/download.gif") no-repeat scroll left top #D4FFC6;
     border: 10px solid #ade899;
     color: #000000;
     margin: 0;
     padding: 10px 10px 25px 50px;
 }
 blockquote.info {
-    background: url("{% static "/static/images/info.gif" %}") no-repeat scroll left top #fef5bd;
+    background: url("/static/images/info.gif") no-repeat scroll left top #fef5bd;
     border: 10px solid #f6e08a;
     color: #000000;
     margin: 10px 0;
     padding: 2px 10px 25px 50px;
 }
 i.smorg_star {
-    background: url("{% static "/static/images/smorg_star.png" %}") no-repeat scroll left bottom;
+    background: url("/static/images/smorg_star.png") no-repeat scroll left bottom;
     display: inline-block;
     height: 16px;
     width: 16px;
