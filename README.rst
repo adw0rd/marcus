@@ -18,7 +18,7 @@ Examples
 
 * http://softwaremaniacs.org/blog/ (Ivan Sagalaev)
 * http://adw0rd.com/ (Mikhail Andreev)
-* http://iryndin.com/ (Ivan Ryndin)
+* http://iryndin.net/ (Ivan Ryndin)
 
 
 Screenshots:
