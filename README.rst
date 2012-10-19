@@ -6,24 +6,32 @@ Marcus is billingual blog engine, written Ivan Sagalaev (http://softwaremaniacs.
 This fork over augmented and has the following features:
 
 * Articles, Categories, Tags entities
-* File uploader for Articles with output thumbnails then file is picture
-* Sitemaps for articles, Feeds for articles and comments
-* Simple search module
-* Beautiful theme (Coming soon)
-* Wordpress Import (command named "wordpress_importer")
+* Simple file loader for the article with a preview images
+* Sitemaps for articles, feeds for articles and comments
+* A simple search module
+* A pretty minimalistic theme
+* Import from Wordpress (command "wordpress_importer")
 
 
 Examples
 ============
 
-* http://softwaremaniacs.org/blog/ (The author blog)
-* http://adw0rd.com/ (The maintainer blog)
+* http://softwaremaniacs.org/blog/ (Ivan Sagalaev)
+* http://adw0rd.com/ (Mikhail Andreev)
+* http://iryndin.com/ (Ivan Ryndin)
 
 
 Screenshots:
 =============
 
-    Сoming soon
+.. image:: https://raw.github.com/adw0rd/marcus/master/docs/screenshots/thumbnails/articles.png
+    :target: https://github.com/adw0rd/marcus/blob/master/docs/screenshots/articles.png
+.. image:: https://raw.github.com/adw0rd/marcus/master/docs/screenshots/thumbnails/article.png
+    :target: https://github.com/adw0rd/marcus/blob/master/docs/screenshots/article.png
+.. image:: https://raw.github.com/adw0rd/marcus/master/docs/screenshots/thumbnails/admin_articles.png
+    :target: https://github.com/adw0rd/marcus/blob/master/docs/screenshots/admin_articles.png
+.. image:: https://raw.github.com/adw0rd/marcus/master/docs/screenshots/thumbnails/admin_article.png
+    :target: https://github.com/adw0rd/marcus/blob/master/docs/screenshots/admin_article.png
 
 
 Installation
