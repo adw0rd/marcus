@@ -32,7 +32,7 @@ urlpatterns = patterns(
     url(r'^comment_preview/$', views.comment_preview, name='marcus-comment-preview'),
     url(r'^pingback/$', pingdjack.server_view, name='marcus-pingback'),
 
-    url(r'^(\d{4})/(\d{2})/(\d{2})/([^/]+)/(?:(en|ru)/)?$', views.article, name='marcus-article'),
+    url(r'^(\d{4})/(\d{1,2})/(\d{1,2})/([^/]+)/(?:(en|ru)/)?$', views.article, name='marcus-article'),
     url(r'^(\d{4})/([^/]+)/(?:(en|ru)/)?$', views.article_short, name='marcus-article-short'),
     url(r'^draft/(\d+)/(?:(en|ru)/)?$', views.draft, name='marcus-draft'),
 
