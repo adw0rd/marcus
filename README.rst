@@ -21,13 +21,13 @@ Examples
 
 
 Screenshots:
-============
+=============
 
     Сoming soon
 
 
 Installation
-============
+=============
 
 From PyPI:
 ------------
@@ -44,12 +44,12 @@ From sources:
     virtualenv --no-site-packages venv
     source venv/bin/activate
     pip install -r requirements.txt
-    python ./manage.py runserver 8000
 
 
-Common settings:
------------------
-::
+Configuration
+==============
+
+Add to ``settings.py``::
 
     MARCUS_PAGINATE_BY = 20
     MARCUS_ARTICLES_ON_INDEX = 10
@@ -57,15 +57,17 @@ Common settings:
     MARCUS_COMMENT_EXCERPTS_ON_INDEX = 2
     MARCUS_ITEMS_IN_FEED = 20
     MARCUS_AUTHOR_ID = 1
-    
     MARCUS_TAG_MINIMUM_ARTICLES = 3
     
     # Specify blog names:
     from django.utils.translation import ugettext_lazy as _
     MARCUS_TITLE = _('Blog')
     MARCUS_SUBTITLE = _('Sample blog')
-    
+
+    # You can specify extras for markdown:
     MARCUS_MARKDOWN_EXTRAS = ['code-friendly', 'wiki-tables']
+    
+    # You can specify #hashtag or @name as suffix for Twitter:
     MARCUS_RETWEET_SUFFIX = "#marcus"
 
     # Specify a fields which will used in search:
@@ -81,7 +83,11 @@ Common settings:
     # Should not end with '/'.
     # Complete site URL is passed if the value is empty.
     SCIPIO_TRUST_URL = ''
-    SCIPIO_AKISMET_KEY = ''  # You can receive the key here https://akismet.com/signup/
+    
+    # Akismet is a spam filtering service.
+    # Without the key will not work comments.
+    # You can receive the key here https://akismet.com/signup/
+    SCIPIO_AKISMET_KEY = ''
     
     SCIPIO_USE_CONTRIB_SITES = True
     
@@ -112,6 +118,32 @@ Common settings:
     )
 
 
+Add to ``urls.py``::
+
+    from django.conf.urls import patterns, include, url
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+    from django.contrib import admin
+    
+    admin.autodiscover()
+    
+    urlpatterns = patterns('',
+        url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+        url(r'^admin/', include(admin.site.urls)),
+        url(r'^', include('marcus.urls')),
+    )
+    
+    urlpatterns += staticfiles_urlpatterns()
+
+
+
+And run so::
+
+    python ./manage.py runserver 8000
+
+
+After installation, going to http://localhost:8000/admin/scipio/profile/ and create you profile.
+
+
 Wordpress importer settings:
 -----------------------------
 
@@ -139,25 +171,3 @@ It has a built-in pipelines for additional filtering data.
             'www.my-old-blog-on-wordpress.org',
         ),
     }
-
-Example of the ``urls.py``:
------------------------------
-::
-
-    from django.conf.urls import patterns, include, url
-    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-    from django.contrib import admin
-    
-    admin.autodiscover()
-    
-    urlpatterns = patterns(
-        '',
-        url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-        url(r'^admin/', include(admin.site.urls)),
-        url(r'^sitemap', include('marcus.sitemap_urls')),
-        url(r'^', include('marcus.urls')),
-        url(r'^', include('subhub.urls')),
-        url(r'^', include('scipio.urls')),
-    )
-    
-    urlpatterns += staticfiles_urlpatterns()

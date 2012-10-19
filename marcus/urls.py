@@ -1,6 +1,6 @@
 import pingdjack
 
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, include, url
 
 from marcus import views, feeds
 
@@ -16,7 +16,6 @@ urlpatterns = patterns(
     url(r'^archive/(?:(en|ru)/)?$', views.archive_index, name='marcus-archive-index'),
     url(r'^archive/(\d{4})/(?:(\d{1,2})/)?(?:(en|ru)/)?$', views.archive, name='marcus-archive'),
     url(r'^(\d{4})/(?:(en|ru)/)?$', views.archive_short, name="marcus-archive-short"),
-
 
     url(r'^suspected/$', views.spam_queue, name='marcus-spam-queue'),
     url(r'^suspected/approve/(\d+)/$', views.approve_comment, name='marcus-approve-comment'),
@@ -41,4 +40,8 @@ urlpatterns = patterns(
     url(r'^([^/]+)/$', views.find_article, name='marcus-find-article'),
 
     url(r'^articleuploadimage/preview/(\d+)/$', views.article_upload_image_preview, name="article-upload-image-preview"),
+    url(r'^sitemap', include('marcus.sitemap_urls')),
+
+    url(r'^', include('subhub.urls')),
+    url(r'^', include('scipio.urls')),
 )
