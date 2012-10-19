@@ -34,7 +34,7 @@
         <ul class="tags-list">
             {% for tag in tags %}
                 {% with tag|translate:language as tag %}
-                    <li><a style="font-size:{{ tag.size }};color:{{ tag.color }};" href="{{ tag.get_absolute_url }}">{{ tag.title }}</a></li>
+                    <li><a class="{{ tag.css_class }}" style="font-size:{{ tag.size }}" href="{{ tag.get_absolute_url }}">{{ tag.title }}</a></li>
                 {% endwith %}
             {% endfor %}
         </ul>

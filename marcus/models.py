@@ -162,8 +162,8 @@ class Tag(models.Model):
         return "{0}%".format(100 + (self.count(language) * 3))
     size.needs_language = True
 
-    def color(self):
-        return "#664e4e"
+    def css_class(self):
+        return "tag_item"
 
 
 class Article(models.Model):

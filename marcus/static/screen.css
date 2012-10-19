@@ -105,6 +105,10 @@ tt.more {
         white-space: nowrap;
     }
 
+.tag_item {
+    color: #664e4e;
+}
+
 .site-menu ul {
     padding: 0;
     margin-top: 0;
