@@ -212,8 +212,8 @@ Installation guide for new projects:
     python ./manage.py createsuperuser
     python ./manage.py runserver 8000
 
-Go to https://akismet.com/signup/, get a ``key`` and enter it here::
+Go to https://akismet.com/signup/, get a **key** and enter it here::
 
-    SCIPIO_AKISMET_KEY = ''
+    SCIPIO_AKISMET_KEY = '<key>'
 
 After installation, going to http://localhost:8000/admin/scipio/profile/ and create you profile.
