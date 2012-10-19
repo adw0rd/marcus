@@ -78,7 +78,7 @@ Add to ``settings.py``::
     MARCUS_COMMENT_EXCERPTS_ON_INDEX = 2
     MARCUS_ITEMS_IN_FEED = 20
     MARCUS_AUTHOR_ID = 1
-    MARCUS_TAG_MINIMUM_ARTICLES = 3
+    MARCUS_TAG_MINIMUM_ARTICLES = 0
     
     # Specify blog names:
     from django.utils.translation import ugettext_lazy as _
