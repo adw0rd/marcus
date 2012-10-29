@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <title>{% block title %}{% trans "Main page" %}{% endblock %} / {% trans MARCUS_TITLE %}</title>
-        <meta name="keywords" content="{% block keywords %}{% endblock %}">
-        <meta name="description" content="{% block description %}{% endblock %}">
+        <meta name="keywords" content="{% block keywords %}{% spaceless %}{{ meta_keywords|striptags }}{% endspaceless %}{% endblock %}">
+        <meta name="description" content="{% block description %}{% spaceless %}{{ meta_description|striptags }}{% endspaceless %}{% endblock %}">
         <meta property="og:title" content="{% block og_title %}{% endblock %}"/>
         <meta property="og:image" content="{% block og_image %}{% endblock %}"/>
         <meta property="og:description" content="{% block og_description %}{% endblock %}"/>

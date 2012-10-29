@@ -62,6 +62,8 @@ def index(request, language):
         'tags': models.Tag.objects.popular(language),
         'articles': articles,
         'comments': comments,
+        'meta_description': settings.MARCUS_DESCRIPTION,
+        'meta_keywords': settings.MARCUS_KEYWORDS,
     })
 
 
@@ -188,37 +190,6 @@ def _process_new_comment(request, comment, language, check_login):
     return redirect(models.Translation(comment, language))
 
 
-# def article(request, year, month, day, slug, language):
-#     obj = get_object_or_404(models.Article, published__year=year, published__month=month, published__day=day, slug=slug)
-#     translation.activate(language or obj.only_language() or 'ru')
-#     if request.method == 'POST':
-#         form = forms.CommentForm(request.user, get_ip(request), obj, language, request.POST)
-#         if form.is_valid():
-#             comment = form.save()
-#             return _process_new_comment(request, comment, language, True)
-#     else:
-#         form = forms.CommentForm(article=obj, language=language)
-#
-#     comments = models.Comment.public.language(language).filter(article=obj).select_related('author', 'author__scipio_profile')
-#     try:
-#         unapproved = models.Comment.objects.get(pk=request.session.get('unapproved'), approved=None)
-#     except models.Comment.DoesNotExist:
-#         unapproved = False
-#         if 'unapproved' in request.session:
-#             del request.session['unapproved']
-#
-#     return render(
-#         request,
-#         'marcus/article.html',
-#         {
-#             'article': models.Translation(obj, language),
-#             'comments': comments,
-#             'noteworthy_count': comments.filter(noteworthy=True).count(),
-#             'form': not obj.comments_hidden and form,
-#             'unapproved': unapproved,
-#             'language': language,
-#         })
-
 def article_short(request, year, slug, language):
     obj = get_object_or_404(models.Article, published__year=year, slug=slug)
     return article(request, year, obj.published.month, obj.published.day, slug, language)
@@ -260,6 +231,9 @@ def article(request, year, month, day, slug, language):
         suffix=settings.MARCUS_RETWEET_SUFFIX.replace('@', '%40')
     )
 
+    keywords = [tag.title(language) for tag in obj.tags.all()] +\
+        [category.title(language) for category in obj.categories.all()]
+
     return render(request, 'marcus/article.html', {
         'article': models.Translation(obj, language),
         'comments': comments,
@@ -269,6 +243,8 @@ def article(request, year, month, day, slug, language):
         'language': language,
         'guest_name': guest_name,
         'retweet_url': retweet_url,
+        'meta_keywords': ", ".join(keywords),
+        'meta_description': obj.intro(language).replace('"', "'"),
     })
 
 
