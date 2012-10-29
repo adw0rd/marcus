@@ -244,7 +244,7 @@ def article(request, year, month, day, slug, language):
         'guest_name': guest_name,
         'retweet_url': retweet_url,
         'meta_keywords': ", ".join(keywords),
-        'meta_description': obj.intro(language).replace('"', "'"),
+        'meta_description': (obj.intro(language) or "").replace('"', "'"),
     })
 
 
