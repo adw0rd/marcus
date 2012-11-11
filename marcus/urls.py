@@ -26,7 +26,7 @@ urlpatterns = patterns(
     url(r'^category/([A-Za-z0-9_-]+)/feed/(?:(en|ru)/)?$', feeds.Category(), name='marcus-category-feed'),
     url(r'^tag/([A-Za-z0-9_-]+)/feed/(?:(en|ru)/)?$', feeds.Tag(), name='marcus-tag-feed'),
     url(r'^comments/feed/(?:(en|ru)/)?$', feeds.Comment(), name='marcus-comments-feed'),
-    url(r'^(\d{4})/(\d{2})/(\d{2})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleComment(), name='marcus-article-comments-feed'),
+    url(r'^(\d{4})/(\d{1,2})/(\d{1,2})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleComment(), name='marcus-article-comments-feed'),
     url(r'^(\d{4})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleCommentShort(), name="marcus-article-comments-feed-short"),
 
     url(r'^comment_preview/$', views.comment_preview, name='marcus-comment-preview'),

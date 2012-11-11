@@ -192,7 +192,9 @@ def _process_new_comment(request, comment, language, check_login):
 
 def article_short(request, year, slug, language):
     obj = get_object_or_404(models.Article, published__year=year, slug=slug)
-    return article(request, year, obj.published.month, obj.published.day, slug, language)
+    args = [i for i in year, obj.published.month, obj.published.day, slug, language if i]
+    url = reverse('marcus-article', args=args)
+    return redirect(url)
 
 
 def article(request, year, month, day, slug, language):
