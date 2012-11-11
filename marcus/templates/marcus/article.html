@@ -6,13 +6,21 @@
 {% block content %}
     {% with article|translate:language as article %}
         <div class="article-title">
-            <h1><a href="{% iurl marcus-article article.published.year article.published.month article.published.day article.slug %}">{{ article.title }}</a></h1>
+            <h1>
+                {% if article.published.year %}
+                    <a href="{% iurl marcus-article article.published.year article.published.month article.published.day article.slug %}">
+                {% else %}
+                    <a href="#">
+                {% endif %}
+                    {{ article.title }}
+                </a>
+            </h1>
         </div>
         <div class="article-text">
             {{ article.html }}
         </div>
-
         <hr />
+
         <div class="article-meta">
             <div style="float:right">{{ article.published.date }}</div>
             <div>{% trans "Categories" %}: {{ article.categories_links|safeseq|join:", " }}</div>
@@ -22,7 +30,11 @@
 
         <div class="comments">
             <h2>{% trans "Comments" %}
-                <a href="{% iurl marcus-article-comments-feed-short article.published.year|default:3000 article.slug %}">
+                {% if article.published.year %}
+                    <a href="{% iurl marcus-article-comments-feed article.published.year article.published.month article.published.day article.slug %}">
+                {% else %}
+                    <a href="#">
+                {% endif %}
                     <img src="{% static "/static/images/smorg_feed.png" %}" />
                 </a>
             </h2>

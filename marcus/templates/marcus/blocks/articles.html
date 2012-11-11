@@ -16,7 +16,9 @@
                         {{ article.intro }}
                     </div>
                     <tt class="more">
-                        <a href="{% iurl marcus-article article.published.year article.published.month article.published.day article.slug %}#more">{% trans "Read the article" %} →</a>
+                        <a href="{% iurl marcus-article article.published.year article.published.month article.published.day article.slug %}#more">
+                            {% trans "Read the article" %} →
+                        </a>
                     </tt>
                     <br />
                     <br />
