@@ -194,6 +194,29 @@ It has a built-in pipelines for additional filtering data.
     }
 
 
+How enable WYSIWYG?
+-----------------------------
+
+As an editor was selected MarkitUp (http://markitup.jaysalvat.com/), so you need to install ``django-markitup``::
+
+    pip install django-markitup
+
+Now, add to your ``settings.py``::
+
+    INSTALLED_APPS = (
+        ...
+        'markitup',
+    )
+    
+    MARKITUP_FILTER = ('markdown2.markdown', {'safe_mode': True})
+    MARKITUP_SET = 'marcus/sets/markdown'
+
+And add to your ``urls.py``::
+
+    url(r'^markitup/', include('markitup.urls')),
+
+That's all!
+
 Installation guide for new projects:
 ======================================
 ::

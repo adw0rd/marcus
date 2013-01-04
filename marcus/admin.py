@@ -1,6 +1,12 @@
 from django import forms
 from django.contrib import admin
 
+try:
+    from markitup.widgets import AdminMarkItUpWidget
+    wysiwyg_widget = AdminMarkItUpWidget
+except ImportError:
+    wysiwyg_widget = forms.TextInput
+
 from marcus import models
 from marcus import actions
 from marcus import widgets
@@ -60,10 +66,14 @@ class ArticleAdmin(mixins.ArticleTextSizeAdminMixin, admin.ModelAdmin):
             model = models.Article
             widgets = {
                 'title_ru': forms.TextInput(attrs={'size': 80}),
-                'text_ru': forms.Textarea(attrs={'cols': 80, 'rows': 30}),
+                'text_ru': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
                 'title_en': forms.TextInput(attrs={'size': 80}),
-                'text_en': forms.Textarea(attrs={'cols': 80, 'rows': 30}),
+                'text_en': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
             }
+
+    # class Media:
+    #     css = {'all': ('markitup-ext/style.css', ), }
+    #     js = ('markitup-ext/script.js', )
 
     def is_published(self, obj):
         return bool(obj.published)
