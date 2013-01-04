@@ -5,8 +5,15 @@ Marcus is billingual blog engine, written Ivan Sagalaev (http://softwaremaniacs.
 
 This fork over augmented and has the following features:
 
-* Articles, Categories, Tags entities
-* Simple file loader for the article with a preview images
+* Billingual articles, Categories, Tags and Comments
+* Simple file uploader for the article with a preview images
+* Archive and date navigation
+* Pingback
+* Automatically pings search engines on new entries
+* Supports markdown (http://pypi.python.org/pypi/markdown2)
+* Comments have CSRF protection via JavaScript, supported Akismet (antispam service)
+* There are authentication via OpenID, or by login with pre-moderated
+* There is support for retweet button
 * Sitemaps for articles, feeds for articles and comments
 * A simple search module
 * A pretty minimalistic theme
