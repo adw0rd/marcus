@@ -5,7 +5,7 @@ try:
     from markitup.widgets import AdminMarkItUpWidget
     wysiwyg_widget = AdminMarkItUpWidget
 except ImportError:
-    wysiwyg_widget = forms.TextInput
+    wysiwyg_widget = forms.Textarea
 
 from marcus import models
 from marcus import actions
