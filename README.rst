@@ -27,6 +27,11 @@ Examples
 * http://adw0rd.com/ (Mikhail Andreev)
 * http://iryndin.net/ (Ivan Ryndin)
 
+About marcus
+=============
+
+* http://softwaremaniacs.org/blog/2010/07/19/marcus-bilingual-blog/
+* http://softwaremaniacs.org/blog/2012/10/21/marcus-new-life/
 
 Screenshots:
 =============
