@@ -22,7 +22,10 @@
         <hr />
 
         <div class="article-meta">
-            <div style="float:right">{{ article.published.date }}</div>
+            <div style="float:right">
+                {{ article.published.date }},
+                <a href="{{ article.get_admin_url }}">{% trans "Edit" %}</a>
+            </div>
             <div>{% trans "Categories" %}: {{ article.categories_links|safeseq|join:", " }}</div>
             <div style="float:right"><a id="retweet-article" href="{{ retweet_url }}">Retweet</a></div>
             <div>{% trans "Tags" %}: {{ article.tags_links|safeseq|join:", " }}</div>

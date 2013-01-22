@@ -255,6 +255,12 @@ class Article(models.Model):
         return utils.iurl('%sfeed/' % self.get_absolute_url(), language)
     get_feed_url.needs_language = True
 
+    def get_admin_url(self):
+        viewname = "admin:{0}_{1}_change".format(
+            self._meta.app_label,
+            self._meta.module_name)
+        return reverse(viewname, args=(self.pk, ))
+
     def title(self, language=None):
         if language:
             return self.title_en if language == 'en' else self.title_ru
