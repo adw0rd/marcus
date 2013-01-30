@@ -1,12 +1,11 @@
 import os
-import marcus
+import imp
 
 PROJECT_ROOT = os.path.dirname(__file__)
 PROJECT_NAME = os.path.basename(PROJECT_ROOT)
 STORAGE_ROOT = os.path.join('/storage', PROJECT_NAME)
-MARCUS_ROOT = os.path.dirname(marcus.__file__)
 LOCALE_PATHS = (
-    os.path.join(MARCUS_ROOT, 'locale'),
+    os.path.join(imp.find_module('marcus')[1], 'locale'),
 )
 
 MARCUS_PAGINATE_BY = 20
