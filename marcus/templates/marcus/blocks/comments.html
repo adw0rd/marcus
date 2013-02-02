@@ -7,7 +7,8 @@
                 {% if comment.noteworthy %}<i class="smorg_star" title="{% trans "Noteworthy comment" %}"></i>{% endif %}
                 {% if not comment.approved %}{% trans "Comment is awaiting approval" %}{% endif %}
                 <span class="comment-date-approved">
-                    <a href="{{ comment.get_absolute_url }}">{{ comment.created }}</a>
+                    <a href="{{ comment.get_absolute_url }}">{{ comment.created }}</a>{% if request.user.is_staff %},
+                    <a href="{{ comment.get_admin_url }}">*</a>{% endif %}
                 </span>
             </div>
             <div class="comment-username">

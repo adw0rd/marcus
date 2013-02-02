@@ -345,6 +345,12 @@ class Comment(models.Model):
         return '%s#comment-%s' % (article.get_absolute_url(), self.pk)
     get_absolute_url.needs_language = True
 
+    def get_admin_url(self):
+        viewname = "admin:{0}_{1}_change".format(
+            self._meta.app_label,
+            self._meta.module_name)
+        return reverse(viewname, args=(self.pk, ))
+
     def html(self):
         html = markdown2.markdown(self.text, extras=settings.MARCUS_MARKDOWN_EXTRAS)
         return mark_safe(html)
