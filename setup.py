@@ -2,7 +2,7 @@ import re
 from setuptools import setup, find_packages
 from marcus import __version__
 
-# INSTALLATION A PACKAGES FROM requirements.txt
+# Installation a packages from "requirements.txt"
 requirements = open('requirements.txt')
 install_requires = []
 dependency_links = []
@@ -19,7 +19,7 @@ try:
 finally:
     requirements.close()
 
-# LONG DESCRIPTION
+# Getting long_description
 long_description = ""
 try:
     readme = open("README.rst")
@@ -28,7 +28,6 @@ try:
 except:
     pass
 
-# SETUP
 setup(
     name='django-marcus',
     version=__version__,
