@@ -2,6 +2,7 @@
 // markItUp!
 // By Jay Salvat - http://markitup.jaysalvat.com/
 // ------------------------------------------------------------------*/
+
 .markItUp .markItUpButton1 a {
     background-image: url(images/h1.png);
 }
@@ -62,4 +63,25 @@
 }
 .markItUp-fullScreen .markItUpContainer {
     padding: 20px 40px 40px;
+}
+.ws-size > a {
+    background-image: url(images/ws-size.png);
+}
+.ws-size ul {
+    border: none !important;
+    margin: 0px !important;
+    padding: 0px !important;
+}
+.ws-size li {
+    border: none !important;
+}
+.ws-size li a {
+    width: 30px !important;
+    padding: 4px 8px 4px 8px !important;
+}
+.ws-size ul a:hover {
+    background-color: #c4c4c4;
+}
+.ws-size .ws-size-item a {
+    font-size: 12px;
 }

@@ -71,10 +71,6 @@ class ArticleAdmin(mixins.ArticleTextSizeAdminMixin, admin.ModelAdmin):
                 'text_en': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
             }
 
-    # class Media:
-    #     css = {'all': ('markitup-ext/style.css', ), }
-    #     js = ('markitup-ext/script.js', )
-
     def is_published(self, obj):
         return bool(obj.published)
     is_published.boolean = True
