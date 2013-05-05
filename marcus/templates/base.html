@@ -24,15 +24,15 @@
                     {% include "marcus/blocks/search.html" %}
                     <div class="site-langs">
                         {% if language == "en" %}
-                            <a href="{% url marcus-index %}">Toggle to Russian and English articles</a>
+                            <a href="{% url 'marcus-index' %}">Toggle to Russian and English articles</a>
                         {% else %}
-                            <a href="{% url marcus-index "en" %}">Toggle to English articles</a>
+                            <a href="{% url 'marcus-index' "en" %}">Toggle to English articles</a>
                         {% endif %}
                     </div>
                 </div>
                 <div class="site-title">
                     <h1>
-                        <a href="{% iurl marcus-index %}">{% trans MARCUS_TITLE %}</a>
+                        <a href="{% iurl 'marcus-index' %}">{% trans MARCUS_TITLE %}</a>
                     </h1>
                 </div>
             {% endblock %}
@@ -41,14 +41,14 @@
         <div class="menu">
             {% block feeds %}
                 <div style="float:right">
-                    <a href="{% iurl marcus-feed %}">
+                    <a href="{% iurl 'marcus-feed' %}">
                         <img src="{% static "/static/images/rss.jpg" %}" />
                     </a>
                 </div>
             {% endblock %}
             <div class="site-menu">
                 <ul>
-                    <li><a href="{% iurl marcus-index %}">{% trans "Blog" %}</a></li>
+                    <li><a href="{% iurl 'marcus-index' %}">{% trans "Blog" %}</a></li>
                 </ul>
             </div>
         </div>

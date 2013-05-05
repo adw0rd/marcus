@@ -8,7 +8,7 @@
         <div class="article-title">
             <h1>
                 {% if article.published.year %}
-                    <a href="{% iurl marcus-article article.published.year article.published.month article.published.day article.slug %}">
+                    <a href="{% iurl 'marcus-article' article.published.year article.published.month article.published.day article.slug %}">
                 {% else %}
                     <a href="#">
                 {% endif %}
@@ -34,7 +34,7 @@
         <div class="comments">
             <h2>{% trans "Comments" %}
                 {% if article.published.year %}
-                    <a href="{% iurl marcus-article-comments-feed article.published.year article.published.month article.published.day article.slug %}">
+                    <a href="{% iurl 'marcus-article-comments-feed' article.published.year article.published.month article.published.day article.slug %}">
                 {% else %}
                     <a href="#">
                 {% endif %}
