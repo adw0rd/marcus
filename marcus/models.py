@@ -1,4 +1,5 @@
 import re
+import hashlib
 import pytils
 import markdown2
 import pingdjack
@@ -12,6 +13,7 @@ from django.db import transaction
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.utils.safestring import mark_safe
 from django.utils.text import truncate_words
 from django.utils.html import strip_tags
@@ -290,6 +292,19 @@ class Article(models.Model):
         return match and mark_safe(match.group(1))
     intro.needs_language = True
 
+    def link(self, language=None):
+        return u'<a href="{url}">{title}</a>'.format(
+            url=self.get_absolute_url(language),
+            title=self.title(language)
+        )
+    html.needs_language = True
+
+    def full_link(self, language=None):
+        current_site = Site.objects.get_current()
+        url = "http://{domain}{url}".format(domain=current_site.domain, url=self.get_absolute_url(language))
+        return u'<a href="{url}">{title}</a>'.format(url=url, title=self.title(language))
+    html.needs_language = True
+
     def categories_links(self, language=None):
         return [category.anchor(language) for category in self.categories.all()]
     categories_links.needs_language = True
@@ -318,7 +333,7 @@ class ArticleUpload(models.Model):
 
 
 class Comment(models.Model):
-    article = models.ForeignKey(Article)
+    article = models.ForeignKey(Article, related_name='comments')
     type = models.CharField(max_length=20, choices=COMMENT_TYPES)
     text = models.TextField(_(u'Text'))
     language = models.CharField(_(u'Language'), max_length=2, choices=LANGUAGES)
@@ -331,11 +346,19 @@ class Comment(models.Model):
     created = models.DateTimeField(default=datetime.now, db_index=True)
     approved = models.DateTimeField(null=True, blank=True, db_index=True)
     noteworthy = models.BooleanField(default=False)
+    followup = models.BooleanField(
+        help_text=_("Receive by email further comments in this conversation"),
+        default=False, blank=True)
 
     objects = models.Manager()
     public = managers.PublicCommentsManager()
     suspected = managers.SuspectedCommentsManager()
     common = managers.CommentsManager()
+
+    def make_token(self, salt="something"):
+        secrets = [self.guest_name, self.guest_email, unicode(self.created), self.ip]
+        secrets.append(salt)
+        return hashlib.md5(":".join(secrets)).hexdigest()
 
     def __unicode__(self):
         return u'%s, %s, %s' % (self.created.strftime('%Y-%m-%d'), self.article, self.author_str())
@@ -387,3 +410,10 @@ def update_tag_and_category_counts(sender, instance, created, **kwargs):
             o.count_articles_ru = o.article_count(language="ru")
         o.save()
 post_save.connect(update_tag_and_category_counts, sender=Article)
+
+
+def notify_followers(sender, instance, created, **kwargs):
+    if instance.approved:
+        utils.notify_comment_followers(instance)
+    utils.notify_comment_managers(instance)
+post_save.connect(notify_followers, sender=Comment)

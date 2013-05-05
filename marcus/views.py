@@ -6,6 +6,7 @@ from scipio.forms import AuthForm
 
 from django import http
 from django.db.models import Q
+from django.utils.safestring import mark_safe
 from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
 from django.views.decorators.http import require_POST
@@ -14,7 +15,6 @@ from django.utils import translation, simplejson
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.http import HttpResponse
 
 from marcus import models, forms, antispam, utils
 
@@ -200,12 +200,13 @@ def article_short(request, year, slug, language):
 def article(request, year, month, day, slug, language):
     obj = get_object_or_404(models.Article, published__year=year, published__month=month, published__day=day, slug=slug)
     guest_name = request.session.get('guest_name', '')
+    guest_email = request.session.get('guest_email', '')
     translation.activate(language or obj.only_language() or 'ru')
     if request.method == 'POST':
         form = forms.CommentForm(request.user, get_ip(request), obj, language, request.POST)
         if form.is_valid():
-            guest_name = request.POST.get('name', '')
-            request.session['guest_name'] = guest_name
+            request.session['guest_name'] = form.cleaned_data.get('name', '')
+            request.session['guest_email'] = form.cleaned_data.get('xemail', '')
             form.cleaned_data['text'] = form.cleaned_data['text'].replace('script', u'sсript')
             comment = form.save()
             return _process_new_comment(request, comment, language, True)
@@ -244,6 +245,7 @@ def article(request, year, month, day, slug, language):
         'unapproved': unapproved,
         'language': language,
         'guest_name': guest_name,
+        'guest_email': guest_email,
         'retweet_url': retweet_url,
         'meta_keywords': ", ".join(keywords),
         'meta_description': (obj.intro(language) or "").replace('"', "'"),
@@ -334,9 +336,9 @@ def handle_pingback(sender, source_url, view, args, author, excerpt, **kwargs):
     if view != article:
         raise pingdjack.UnpingableTarget
     a = models.Article.objects.get(slug=args[3])
-    if a.comment_set.filter(type='pingback', guest_url=source_url):
+    if a.comments.filter(type='pingback', guest_url=source_url):
         raise pingdjack.DuplicatePing
-    a.comment_set.create(
+    a.comments.create(
         type='pingback',
         text=excerpt,
         author=User.objects.get(username='marcus_guest'),
@@ -361,13 +363,13 @@ def article_upload_image_preview(request, object_id):
     try:
         image = Image.open(image_path.encode('utf-8'))
     except:
-        return HttpResponse("Not a image", mimetype="text/html")
+        return http.HttpResponse("Not a image", mimetype="text/html")
 
     buffer = StringIO.StringIO()
     max_width = max_width if max_width < image.size[0] else image.size[0]
     height = int((float(image.size[1]) * float(max_width / float(image.size[0]))))
     image.resize((max_width, height), Image.ANTIALIAS).save(buffer, "PNG")
-    return HttpResponse(buffer.getvalue(), mimetype="image/png")
+    return http.HttpResponse(buffer.getvalue(), mimetype="image/png")
 
 
 def search(request, language):
@@ -394,3 +396,26 @@ def search(request, language):
             'search_languages': SEARCH_LANGUAGES,
         },
     )
+
+
+def article_comments_unsubscribe(request, article_id, token, language):
+    language = language or translation.get_language()
+    translation.activate(language)
+
+    article = get_object_or_404(models.Article, pk=article_id)
+    comments = article.comments.filter(followup=True)
+    for comment in comments:
+        if comment.make_token() == token:
+            found_comment = comment
+            comments\
+                .filter(guest_email=comment.guest_email)\
+                .update(followup=False)
+            break
+    else:
+        return http.HttpResponseForbidden(
+            'Token is failed or expired!', mimetype='text/plain')
+
+    return render(request, 'marcus/unsubscribe.html', {
+        'article_link': mark_safe(article.link(language)),
+        'guest_name': found_comment.guest_name or found_comment.guest_email,
+    })

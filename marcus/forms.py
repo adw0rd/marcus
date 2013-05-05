@@ -11,9 +11,14 @@ def model_field(model, fieldname, **kwargs):
 
 
 class CommentForm(forms.Form):
-    text = model_field(models.Comment, 'text', widget=forms.Textarea(attrs={'cols': '80', 'rows': '20'}))
-    language = model_field(models.Comment, 'language', required=False)
-    name = forms.CharField(label=_(u'Name or OpenID'), required=False)
+    text = model_field(
+        models.Comment, 'text', widget=forms.Textarea(attrs={'cols': '80', 'rows': '20'}))
+    language = model_field(
+        models.Comment, 'language', required=False)
+    name = forms.CharField(
+        label=_(u'Name or OpenID'), required=False)
+    xemail = forms.EmailField(
+        label=_(u'Email for notifications'), required=False)
 
     def __init__(self, user=None, ip=None, article=None, language=None, *args, **kwargs):
         super(CommentForm, self).__init__(*args, **kwargs)
@@ -46,11 +51,14 @@ class CommentForm(forms.Form):
         return self.cleaned_data['name']
 
     def save(self):
-        return self.article.comment_set.create(
+        guest_email = self.cleaned_data.get('xemail')
+        return self.article.comments.create(
             type='comment',
             text=self.cleaned_data['text'],
             author=self.user,
-            guest_name=self.cleaned_data['name'],
+            guest_name=self.cleaned_data.get('name'),
+            guest_email=guest_email,
             ip=self.ip,
             language=self.cleaned_data['language'],
+            followup=bool(guest_email),
         )

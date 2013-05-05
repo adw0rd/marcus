@@ -28,6 +28,7 @@ urlpatterns = patterns(
     url(r'^comments/feed/(?:(en|ru)/)?$', feeds.Comment(), name='marcus-comments-feed'),
     url(r'^(\d{4})/(\d{1,2})/(\d{1,2})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleComment(), name='marcus-article-comments-feed'),
     url(r'^(\d{4})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleCommentShort(), name="marcus-article-comments-feed-short"),
+    url(r'^comments/unsubscribe/(\d+)/(\w+)/(?:(en|ru)/)?$', views.article_comments_unsubscribe, name="marcus-article-comments-unsubscribe"),
 
     url(r'^comment_preview/$', views.comment_preview, name='marcus-comment-preview'),
     url(r'^pingback/$', pingdjack.server_view, name='marcus-pingback'),

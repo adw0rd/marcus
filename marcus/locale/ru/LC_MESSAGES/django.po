@@ -32,6 +32,9 @@ msgstr "Имя"
 msgid "Name or OpenID"
 msgstr "Имя или OpenID"
 
+msgid "Email for notifications"
+msgstr "Email для уведомлений"
+
 #: models.py:231
 msgid "Russian"
 msgstr "Русский"
@@ -105,3 +108,39 @@ msgstr "Рубрики"
 
 msgid "Tags"
 msgstr "Теги"
+
+msgid "We decided that this comment is spam!"
+msgstr "Мы решили что этот комментарий - спам!"
+
+msgid "Please fix it..."
+msgstr "Пожалуйста, исправьте его..."
+
+msgid "Receive by email further comments in this conversation"
+msgstr "Получать по email новые комментарии в этом обсуждении"
+
+msgid "New comment in \"%(article_title)s\""
+msgstr "Новый комментарий в \"%(article_title)s\""
+
+msgid "You're receiving this email because subscribed to comments to \"%(article_title)s\"."
+msgstr "Вы получили этот email, так как подписались на комментарии к \"%(article_title)s\"."
+
+msgid "You're receiving this email because subscribed to comments to %(article_link)s."
+msgstr "Вы получили этот email, так как подписались на комментарии к %(article_link)s."
+
+msgid "The user \"%(comment_guest_name)s\" say:"
+msgstr "Пользователь \"%(comment_guest_name)s\" сказал:"
+
+msgid "Comment published:"
+msgstr "Комментарий опубликован:"
+
+msgid "To unsubscribe, go to:"
+msgstr "Для отписки от рассылки, перейдите на:"
+
+msgid "Unsubscribe"
+msgstr "Отписаться"
+
+msgid "Dear %(guest_name)s!"
+msgstr "Уважаемый %(guest_name)s!"
+
+msgid "You have just unsubscribed from article %(article_link)s."
+msgstr "Вы только что отписались от статьи %(article_link)s."

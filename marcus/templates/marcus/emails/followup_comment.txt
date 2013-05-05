@@ -1,0 +1,13 @@
+{% load i18n %}
+{% blocktrans %}You're receiving this email because subscribed to comments to "{{ article_title }}".{% endblocktrans %}
+http://{{ site_domain }}{{ article_url }}
+
+{% if comment_guest_name %}{% blocktrans %}The user "{{ comment_guest_name }}" say:{% endblocktrans %}{% endif %}
+{{ comment_text }}
+
+{% trans "Comment published:" %} {{ comment_created }}
+
+{% if unsubscribe_url %}{% trans "To unsubscribe, go to:" %} http://{{ site_domain }}{{ unsubscribe_url }}
+{% endif %}
+---
+{{ sign }}

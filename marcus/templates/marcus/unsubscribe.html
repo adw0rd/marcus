@@ -1,0 +1,11 @@
+{% extends "base_with_sidebar.html"%}
+{% load i18n %}
+
+{% block title %}{% trans "Unsubscribe" %}{% endblock %}
+
+{% block content %}
+    <div>
+       <h4>{% blocktrans%}Dear {{ guest_name }}!{% endblocktrans%}</h4>
+       <p>{% blocktrans%}You have just unsubscribed from article {{ article_link }}.{% endblocktrans%}</p>
+    </div>
+{% endblock %}
