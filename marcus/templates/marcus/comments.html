@@ -1,10 +1,10 @@
-{% load i18n marcus_tags %}
+{% load i18n static marcus_tags %}
 {% include "marcus/blocks/comments.html" %}
 
 <a name="comment-form"></a>
 {% if form %}
     <form action="{% iurl 'marcus-article' article.published.year article.published.month article.published.day article.slug %}#comment-form"
-		  method="post" id="comment-form">
+          method="post" id="comment-form">
         <div class="comment-form-input">
             {% if request.user.is_authenticated %}
                 <div style="float:left;margin-right:5px">{{ request.user }}</div>
@@ -42,6 +42,10 @@
         </div>
         <input type="submit" value="{% trans "Send to moderation" %}" />
     </form>
+    <div style="margin-left: 800px;">
+        <img src="{% static "images/markdown-legend.png" %}" alt="Markdown" />
+    </div>
+    <br clear="all" />
     <script type="text/javascript">
         var form = document.getElementById('comment-form');
         form.innerHTML = form.innerHTML + "{% csrf_token %}";
