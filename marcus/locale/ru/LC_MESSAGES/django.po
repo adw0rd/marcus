@@ -144,3 +144,6 @@ msgstr "Уважаемый %(guest_name)s!"
 
 msgid "You have just unsubscribed from article %(article_link)s."
 msgstr "Вы только что отписались от статьи %(article_link)s."
+
+msgid "Make approved"
+msgstr "Сделать утвержденным"

@@ -18,7 +18,7 @@ from django.utils.safestring import mark_safe
 from django.utils.text import truncate_words
 from django.utils.html import strip_tags
 from django.utils.functional import curry
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.db.models.signals import post_save
 
 from marcus import utils
