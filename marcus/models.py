@@ -356,9 +356,8 @@ class Comment(models.Model):
     common = managers.CommentsManager()
 
     def make_token(self, salt="something"):
-        secrets = [self.guest_name, self.guest_email, unicode(self.created), self.ip]
-        secrets.append(salt)
-        return hashlib.md5(":".join(secrets)).hexdigest()
+        secrets = map(unicode, [self.pk, self.guest_email, self.created, self.ip, salt])
+        return hashlib.md5(u":".join(secrets)).hexdigest()
 
     def __unicode__(self):
         return u'%s, %s, %s' % (self.created.strftime('%Y-%m-%d'), self.article, self.author_str())
