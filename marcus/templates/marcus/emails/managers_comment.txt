@@ -7,7 +7,7 @@ http://{{ site_domain }}{{ article_url }}
 
 {% trans "Comment published:" %} {{ comment_created }}
 
-{% trans "To unsubscribe, go to:" %} http://{{ site_domain }}{{ unsubscribe_url }}
+http://{{ site_domain }}{{ comment_admin_url }}
 
 ---
 {{ sign }}

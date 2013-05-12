@@ -85,10 +85,11 @@ def notify_comment_managers(target_comment):
         return None
 
     common_context = notify_comment_context(target_comment)
+    common_context['comment_admin_url'] = target_comment.get_admin_url()
     context = Context(common_context)
-    text_message = loader.get_template("marcus/emails/followup_comment.txt").render(context)
-    html_message = loader.get_template("marcus/emails/followup_comment.html").render(context)
-    subject = loader.get_template("marcus/emails/followup_comment_subject.txt").render(context).strip()
+    text_message = loader.get_template("marcus/emails/managers_comment.txt").render(context)
+    html_message = loader.get_template("marcus/emails/managers_comment.html").render(context)
+    subject = loader.get_template("marcus/emails/managers_comment_subject.txt").render(context).strip()
     return send_email(subject, text_message, html_message, recipients)
 
 
