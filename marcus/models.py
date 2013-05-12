@@ -415,5 +415,6 @@ post_save.connect(update_tag_and_category_counts, sender=Article)
 def notify_followers(sender, instance, created, **kwargs):
     if instance.approved:
         utils.notify_comment_followers(instance)
-    utils.notify_comment_managers(instance)
+    if not instance.spam_status:
+        utils.notify_comment_managers(instance)
 post_save.connect(notify_followers, sender=Comment)
