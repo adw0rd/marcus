@@ -1,6 +1,9 @@
 Introduction
 ============
 
+.. image:: https://pypip.in/d/django-marcus/badge.png
+    :target: http://pypi.python.org/pypi/django-marcus
+
 Marcus is billingual blog engine, written Ivan Sagalaev (http://softwaremaniacs.org/about/).
 
 This fork over augmented and has the following features:
