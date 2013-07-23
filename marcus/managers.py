@@ -5,12 +5,13 @@ from marcus.queryset import MarcusManager
 
 
 class CommonLanguageManager(MarcusManager):
+
     def language(self, code):
         queryset = self.get_query_set()
         if code == 'en':
-            queryset = queryset.exclude(text_en='')
+            queryset = queryset.exclude(title_en='')
         elif code == 'ru':
-            queryset = queryset.exclude(text_ru='')
+            queryset = queryset.exclude(title_ru='')
         return queryset
 
 
