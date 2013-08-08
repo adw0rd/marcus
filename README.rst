@@ -85,6 +85,9 @@ Add to ``settings.py``::
     from django.utils.translation import ugettext_lazy as _
     MARCUS_TITLE = _('Blog')
     MARCUS_SUBTITLE = _('Sample blog')
+    
+    MARCUS_DESCRIPTION = _('')
+    MARCUS_KEYWORDS = _('')
 
     # You can specify extras for markdown:
     MARCUS_MARKDOWN_EXTRAS = ['code-friendly', 'wiki-tables']
