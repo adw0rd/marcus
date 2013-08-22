@@ -50,7 +50,40 @@ class ArticleUploadInlineAdmin(admin.TabularInline):
     form = ArticleUploadForm
 
 
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = models.Article
+        widgets = {
+            'title_ru': forms.TextInput(attrs={'size': 80}),
+            'text_ru': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
+            'title_en': forms.TextInput(attrs={'size': 80}),
+            'text_en': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
+        }
+    
+    def clean(self):
+        cleaned_data = super(ArticleForm, self).clean()
+        title_ru = cleaned_data['title_ru']
+        title_en = cleaned_data['title_en']
+        text_ru = cleaned_data['text_ru']
+        text_en = cleaned_data['text_en']
+
+        if (not title_ru and not text_ru) and (not title_en and not text_en):
+            raise forms.ValidationError("Need to fill 'Title ru' or 'Title en'")
+        
+        if not title_ru and text_ru:
+            self._errors['title_ru'] = self.error_class(["Need to fill 'Title ru'"])
+            del cleaned_data['title_ru']
+        
+        if not title_en and text_en:
+            self._errors['title_en'] = self.error_class(["Need to fill 'Title en'"])
+            del cleaned_data['title_en']
+        
+        return cleaned_data
+
+
+
 class ArticleAdmin(mixins.ArticleTextSizeAdminMixin, admin.ModelAdmin):
+    form = ArticleForm
     save_on_top = True
     list_display = ('slug', 'title', 'text_size', 'is_published', )
     list_filter = (('published', TimedBooleanFilter), )
@@ -60,16 +93,6 @@ class ArticleAdmin(mixins.ArticleTextSizeAdminMixin, admin.ModelAdmin):
 
     fields = ('slug', 'title_ru', 'text_ru', 'title_en', 'text_en', 'categories', 'tags', 'comments_hidden', 'published', )
     filter_horizontal = ('categories', 'tags', )
-
-    class form(forms.ModelForm):
-        class Meta:
-            model = models.Article
-            widgets = {
-                'title_ru': forms.TextInput(attrs={'size': 80}),
-                'text_ru': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
-                'title_en': forms.TextInput(attrs={'size': 80}),
-                'text_en': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
-            }
 
     def is_published(self, obj):
         return bool(obj.published)
