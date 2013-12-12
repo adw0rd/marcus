@@ -6,7 +6,7 @@
     {% for key, value in available_search_languages %}
         <label for="{{ key }}">
             <input type="radio" id="{{ key }}" name="l" value="{{ key }}"
-                   {% if search_language == key %}checked="chaecked"{% endif %} /> {{ value }}
+                   {% if search_language == key %}checked="chaecked"{% endif %} /> {% trans value %}
         </label>
     {% endfor %}
 </form>

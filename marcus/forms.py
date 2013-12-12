@@ -12,7 +12,7 @@ def model_field(model, fieldname, **kwargs):
 
 class CommentForm(forms.Form):
     text = model_field(
-        models.Comment, 'text', widget=forms.Textarea(attrs={'cols': '80', 'rows': '20'}))
+        models.Comment, 'text', label=_(u'Text'), widget=forms.Textarea(attrs={'cols': '80', 'rows': '20'}))
     language = model_field(
         models.Comment, 'language', required=False)
     name = forms.CharField(
