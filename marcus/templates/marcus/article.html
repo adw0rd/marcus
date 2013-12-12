@@ -27,7 +27,7 @@
                 {% if request.user.is_staff %}, <a href="{{ article.get_admin_url }}">{% trans "Edit" %}</a>{% endif %}
             </div>
             <div>{% trans "Categories" %}: {{ article.categories_links|safeseq|join:", " }}</div>
-            <div style="float:right"><a id="retweet-article" href="{{ retweet_url }}">Retweet</a></div>
+            <div style="float:right"><a id="retweet-article" href="{{ retweet_url }}">{% trans "Retweet" %}</a></div>
             <div>{% trans "Tags" %}: {{ article.tags_links|safeseq|join:", " }}</div>
         </div>
 
