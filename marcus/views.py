@@ -19,6 +19,7 @@ from django.conf import settings
 from marcus import models, forms, antispam, utils
 
 
+
 def object_list(request, queryset, template_name, context):
     paginator = Paginator(queryset, settings.MARCUS_PAGINATE_BY)
     try:
@@ -374,8 +375,8 @@ def article_upload_image_preview(request, object_id):
 
 def search(request, language):
     SEARCH_LANGUAGES = (
-        (None, 'All'),
-        ('en', 'English'),
+        (None, translation.ugettext_lazy(u'All')),
+        ('en', translation.ugettext_lazy(u'English')),
     )
     search_query = request.GET.get('s', '')
     search_language = request.GET.get('l', None)
