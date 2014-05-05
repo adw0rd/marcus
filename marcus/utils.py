@@ -101,8 +101,9 @@ def notify_comment_followers(target_comment):
     comments = Comment.public\
         .filter(article=target_comment.article, followup=True)\
         .exclude(guest_email='')\
-        .exclude(guest_email=target_comment.guest_email)
-    comments.query.group_by = ['guest_email']
+        .exclude(guest_email=target_comment.guest_email)\
+        .distinct('guest_email')\
+        .order_by('guest_email')
 
     for comment in comments:
         if not comment.guest_email:
