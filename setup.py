@@ -36,6 +36,7 @@ class install_lib(_install_lib):
 requirements = open('requirements.txt')
 install_requires = []
 dependency_links = []
+setup_requires = []
 try:
     for line in requirements.readlines():
         line = line.strip()
@@ -47,6 +48,8 @@ try:
                 dependency_links.append(links[1])
             else:
                 install_requires.append(line)
+                if "Django" in line:
+                    setup_requires.append(line)
 finally:
     requirements.close()
 
@@ -73,7 +76,7 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     dependency_links=dependency_links,
-    setup_requires=['django'],
+    setup_requires=setup_requires,
     package_data={'': ['requirements.txt']},
     include_package_data=True,
     classifiers=[
