@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.utils.safestring import mark_safe
-from django.utils.text import truncate_words
+from django.utils.text import Truncator
 from django.utils.html import strip_tags
 from django.utils.functional import curry
 from django.utils.translation import ugettext as _
@@ -282,7 +282,7 @@ class Article(models.Model):
     html.needs_language = True
 
     def summary(self, language=None):
-        return mark_safe(truncate_words(strip_tags(self.html(language)), 50))
+        return mark_safe(Truncator(strip_tags(self.html(language))).words(50))
     summary.needs_language = True
 
     def intro(self, language=None):
@@ -378,7 +378,7 @@ class Comment(models.Model):
         return mark_safe(html)
 
     def summary(self):
-        return mark_safe(truncate_words(strip_tags(self.html()), 50))
+        return mark_safe(Truncator(strip_tags(self.html())).words(50))
 
     def by_guest(self):
         return self.author.username == 'marcus_guest'
