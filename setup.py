@@ -57,8 +57,8 @@ try:
             if "#egg" in line:
                 names = re.findall('#egg=([^-]+)-?', line)
                 install_requires.append(names[0])
-                links = line.split()
-                dependency_links.append(links[1])
+                links = [link for link in line.split() if '://' in link]
+                dependency_links.append(links[0])
             else:
                 install_requires.append(line)
                 if "Django" in line:
