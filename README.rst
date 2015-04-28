@@ -55,7 +55,9 @@ Installation
 http://pypi.python.org/pypi/django-marcus
 ::
 
+    mkvirtualenv marcus
     pip install django-marcus
+    django-admin.py startproject <project_name>
 
 
 Configuration
@@ -72,6 +74,9 @@ Add to ``settings.py``::
     LOCALE_PATHS = (
         os.path.join(imp.find_module('marcus')[1], 'locale'),
     )
+
+    // Please setup settings.MANAGERS for notify about new comments
+    MANAGERS = ('my@example.com')
 
     MARCUS_PAGINATE_BY = 20
     MARCUS_ARTICLES_ON_INDEX = 10
