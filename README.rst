@@ -56,7 +56,7 @@ http://pypi.python.org/pypi/django-marcus
 ::
 
     mkvirtualenv marcus
-    pip install django-marcus
+    pip install --process-dependency-links django-marcus
     django-admin.py startproject <project_name>
 
 
@@ -240,7 +240,7 @@ Installation guide for new projects:
 
     django-admin.py startproject project
     cd project
-    pip install django-marcus
+    pip install --process-dependency-links django-marcus
     ... Copy the settings to settings.py and you urls to you urls.py described above ...
     python ./manage.py syncdb
     python ./manage.py createsuperuser

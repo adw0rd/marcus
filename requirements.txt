@@ -6,8 +6,8 @@ httplib2>=0.7.4
 python-openid>=2.2.5
 markdown2>=2.0.1
 
---allow-external -e http://github.com/adw0rd/scipio/tarball/master#egg=scipio
---allow-external -e git://github.com/adw0rd/pingdjack.git@0.1#egg=pingdjack
+-e git+git://github.com/adw0rd/scipio.git#egg=scipio-0.1.1
+-e git+git://github.com/adw0rd/pingdjack.git@0.1#egg=pingdjack-0.1
 
 # wordpress_importer command required:
 html2text>=3.200.3

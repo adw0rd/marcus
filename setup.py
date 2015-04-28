@@ -26,10 +26,8 @@ class compile_translations(Command):
         curdir = os.getcwd()
         os.chdir(os.path.join(os.path.dirname(__file__), 'marcus'))
         cmd = CompileMessages()
-        if not hasattr(cmd, 'stdout'):
-            cmd.stdout = sys.stdout
-        if not hasattr(cmd, 'stderr'):
-            cmd.stderr = sys.stderr
+        cmd.stdout = sys.stdout
+        cmd.stderr = sys.stderr
         cmd.handle(verbosity=4)
         os.chdir(curdir)
 
