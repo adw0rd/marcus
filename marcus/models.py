@@ -3,7 +3,6 @@ import hashlib
 import pytils
 import markdown2
 import pingdjack
-import subhub
 import itertools
 
 from scipio.models import Profile
@@ -186,23 +185,6 @@ class Article(models.Model):
     def __unicode__(self):
         return self.slug
 
-    def _notify_hub(self):
-        def languages():
-            if self.text_ru:
-                yield 'ru'
-            if self.text_en:
-                yield 'en'
-            if self.text_ru and self.text_en:
-                yield None
-
-        for language in languages():
-            topics = [utils.iurl(reverse('marcus-feed'), language)] + \
-                     [c.get_feed_url(language) for c in self.categories.all()]
-            subhub.publish(
-                [utils.absolute_url(t) for t in topics],
-                utils.absolute_url(self.get_absolute_url(language)),
-            )
-
     def _pingback(self):
         if settings.DEBUG:
             return None
@@ -223,7 +205,6 @@ class Article(models.Model):
                 transaction.commit()
             if not already_published:
                 self._pingback()
-            self._notify_hub()
 
     def only_language(self):
         return None if (self.text_en and self.text_ru) else 'en' if self.text_en else 'ru'

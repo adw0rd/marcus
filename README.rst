@@ -152,7 +152,6 @@ Add to ``settings.py``::
         'django.contrib.staticfiles',
         'django.contrib.flatpages',
         'marcus',
-        'subhub',
         'scipio',
     )
 

@@ -103,9 +103,6 @@ class Article(ArticleFeed, ContentFeed):
     def link(self, (obj, language)):
         return utils.iurl(reverse('marcus-index'), language)
 
-    def hub_link(self, obj):
-        return reverse('subhub-hub')
-
     def get_query_set(self, obj, language):
         return models.Article.public.language(language)
 
@@ -123,9 +120,6 @@ class Category(ArticleFeed, ContentFeed):
     def link(self, (category, language)):
         return utils.iurl(reverse('marcus-category', args=[category.slug]), language)
 
-    def hub_link(self, obj):
-        return reverse('subhub-hub')
-
     def get_query_set(self, category, language):
         return models.Article.public.language(language).filter(categories=category)
 
@@ -142,9 +136,6 @@ class Tag(ArticleFeed, ContentFeed):
 
     def link(self, (tag, language)):
         return utils.iurl(reverse('marcus-tag', args=[tag.slug]), language)
-
-    def hub_link(self, obj):
-        return reverse('subhub-hub')
 
     def get_query_set(self, tag, language):
         return models.Article.public.language(language).filter(tags=tag)
