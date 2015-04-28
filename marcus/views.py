@@ -1,23 +1,24 @@
 # coding: utf-8
+import json
 import scipio
 import pingdjack
-from datetime import datetime
+import datetime
 from scipio.forms import AuthForm
 
 from django import http
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, render, redirect
-from django.utils import translation, simplejson
+from django.utils import translation
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.conf import settings
 
 from marcus import models, forms, antispam, utils
-
 
 
 def object_list(request, queryset, template_name, context):
@@ -128,7 +129,7 @@ def archive(request, year, month, language):
     queryset = models.Article.public.language(language)
     if month:
         try:
-            first = datetime.strptime('%s-%s' % (year, month), '%Y-%m')
+            first = datetime.datetime.strptime('%s-%s' % (year, month), '%Y-%m')
         except ValueError:
             raise http.Http404()
         queryset = queryset.filter(published__year=year, published__month=month)
@@ -184,7 +185,7 @@ def _process_new_comment(request, comment, language, check_login):
             return redirect(url)
     comment.spam_status = spam_status
     if spam_status == 'clean':
-        comment.approved = datetime.now()
+        comment.approved = timezone.now()
     else:
         request.session['unapproved'] = comment.pk
     comment.save()
@@ -283,7 +284,7 @@ scipio.signals.authenticated.connect(acquire_comment)
 def approve_comment(request, id):
     comment = get_object_or_404(models.Comment, pk=id)
     antispam.conveyor.submit_ham(comment.spam_status, comment=comment)
-    comment.approved = datetime.now()
+    comment.approved = timezone.now()
     comment.save()
     if not comment.by_guest():
         scipio_profile = comment.author.scipio_profile
@@ -328,7 +329,7 @@ def spam_queue(request):
 def comment_preview(request):
     html = models.Comment(text=request.POST.get('text', '')).html()
     return http.HttpResponse(
-        simplejson.dumps({'status': 'valid', 'html': html}),
+        json.dumps({'status': 'valid', 'html': html}),
         content_type='application/json',
     )
 
@@ -347,7 +348,7 @@ def handle_pingback(sender, source_url, view, args, author, excerpt, **kwargs):
         guest_url=source_url,
         ip=get_ip(sender),
         language=a.comment_language(args[4]),
-        approved=datetime.now(),
+        approved=timezone.now(),
     )
 pingdjack.received.connect(handle_pingback)
 

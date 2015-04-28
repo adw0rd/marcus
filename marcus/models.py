@@ -5,7 +5,7 @@ import markdown2
 import pingdjack
 import subhub
 import itertools
-from datetime import datetime
+
 from scipio.models import Profile
 
 from django.db import models
@@ -343,7 +343,7 @@ class Comment(models.Model):
     guest_url = models.URLField(blank=True)
     ip = models.IPAddressField(default='127.0.0.1')
     spam_status = models.CharField(max_length=20, blank=True, default='')
-    created = models.DateTimeField(default=datetime.now, db_index=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
     approved = models.DateTimeField(null=True, blank=True, db_index=True)
     noteworthy = models.BooleanField(default=False)
     followup = models.BooleanField(
