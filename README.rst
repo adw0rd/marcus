@@ -75,8 +75,11 @@ Add to ``settings.py``::
         os.path.join(imp.find_module('marcus')[1], 'locale'),
     )
 
+    ADMINS = (
+        ('Admin', 'admin@example.com'),
+    )
     // Please setup settings.MANAGERS for notify about new comments
-    MANAGERS = ('my@example.com')
+    MANAGERS = ADMINS
 
     MARCUS_PAGINATE_BY = 20
     MARCUS_ARTICLES_ON_INDEX = 10
