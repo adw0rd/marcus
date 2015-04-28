@@ -27,14 +27,15 @@ Examples
 ============
 
 * http://softwaremaniacs.org/blog/ (Ivan Sagalaev)
+* https://prudnitskiy.pro/ (Pavel Rudnitskiy)
 * http://adw0rd.com/ (Mikhail Andreev)
-* http://iryndin.net/ (Ivan Ryndin)
 
 About marcus
 =============
 
 * http://softwaremaniacs.org/blog/2010/07/19/marcus-bilingual-blog/
 * http://softwaremaniacs.org/blog/2012/10/21/marcus-new-life/
+* http://adw0rd.com/2012/8/8/goodbye-wordpress/
 
 Screenshots:
 =============
