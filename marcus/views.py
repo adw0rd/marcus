@@ -202,11 +202,9 @@ def article_short(request, year, slug, language):
 
 
 def article(request, year, month, day, slug, language):
-    timezone.activate(timezone.utc)  # HACK
     obj = get_object_or_404(
         models.Article, published__year=year, published__month=month, published__day=day, slug=slug
     )
-    timezone.deactivate()
     guest_name = request.session.get('guest_name', '')
     guest_email = request.session.get('guest_email', '')
     translation.activate(language or obj.only_language() or 'ru')
