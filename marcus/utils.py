@@ -1,12 +1,15 @@
 # coding: utf-8
 import re
 
+from django.http import Http404
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.template import loader, Context
+from django.shortcuts import get_object_or_404 as goo404
 from django.core.mail import EmailMultiAlternatives
 from django.utils import translation
+from django.utils import timezone
 
 
 def absolute_url(url):
@@ -132,3 +135,15 @@ def send_email(subject, text_message, html_message, emails):
         subject, text_message, settings.DEFAULT_FROM_EMAIL, emails)
     message.attach_alternative(html_message, "text/html")
     return message.send()
+
+
+def get_object_or_404(*args, **kwargs):
+    try:
+        return goo404(*args, **kwargs)
+    except Http404:
+        # Hack for old version of Django for saved datetimes in DB.
+        # Migration is not safity, so I can't create it.
+        timezone.activate(timezone.utc)
+        obj = goo404(*args, **kwargs)
+        timezone.deactivate()
+        return obj

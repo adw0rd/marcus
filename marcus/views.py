@@ -12,13 +12,14 @@ from django.utils.safestring import mark_safe
 from django.core.paginator import Paginator, InvalidPage
 from django.core.urlresolvers import reverse
 from django.views.decorators.http import require_POST
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import render, redirect
 from django.utils import translation
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.conf import settings
 
 from marcus import models, forms, antispam, utils
+from marcus.utils import get_object_or_404
 
 
 def object_list(request, queryset, template_name, context):
@@ -118,6 +119,7 @@ def tag(request, slug, language):
 
 def archive_index(request, language):
     translation.activate(language or 'ru')
+    settings.USE_TZ = False
     return render(request, 'marcus/archive-index.html', {
         'language': language,
         'months': sorted(models.Article.public.language(language).dates('published', 'month'), reverse=True),
@@ -200,7 +202,11 @@ def article_short(request, year, slug, language):
 
 
 def article(request, year, month, day, slug, language):
-    obj = get_object_or_404(models.Article, published__year=year, published__month=month, published__day=day, slug=slug)
+    timezone.activate(timezone.utc)  # HACK
+    obj = get_object_or_404(
+        models.Article, published__year=year, published__month=month, published__day=day, slug=slug
+    )
+    timezone.deactivate()
     guest_name = request.session.get('guest_name', '')
     guest_email = request.session.get('guest_email', '')
     translation.activate(language or obj.only_language() or 'ru')
