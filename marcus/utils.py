@@ -101,12 +101,21 @@ def notify_comment_followers(target_comment):
     """
     common_context = notify_comment_context(target_comment)
     from marcus.models import Comment
-    comments = Comment.public\
-        .filter(article=target_comment.article, followup=True)\
-        .exclude(guest_email='')\
-        .exclude(guest_email=target_comment.guest_email)\
-        .distinct('guest_email')\
-        .order_by('guest_email')
+
+    try:
+        comments = Comment.public\
+            .filter(article=target_comment.article, followup=True)\
+            .exclude(guest_email='')\
+            .exclude(guest_email=target_comment.guest_email)\
+            .distinct('guest_email')\
+            .order_by('guest_email')
+    except NotImplementedError:
+        # Temporary fix for MySQL
+        comments = Comment.public\
+            .filter(article=target_comment.article, followup=True)\
+            .exclude(guest_email='')\
+            .exclude(guest_email=target_comment.guest_email)
+        comments.query.group_by = ['guest_email']
 
     for comment in comments:
         if not comment.guest_email:
