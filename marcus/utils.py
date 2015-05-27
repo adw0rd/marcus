@@ -109,6 +109,7 @@ def notify_comment_followers(target_comment):
             .exclude(guest_email=target_comment.guest_email)\
             .distinct('guest_email')\
             .order_by('guest_email')
+        comments = list(comments)
     except NotImplementedError:
         # Temporary fix for MySQL
         comments = Comment.public\
