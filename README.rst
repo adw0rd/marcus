@@ -249,3 +249,8 @@ Go to https://akismet.com/signup/, get a **key** and enter it here::
     SCIPIO_AKISMET_KEY = '<key>'
 
 After installation, going to http://localhost:8000/admin/scipio/profile/ and create you profile.
+
+License
+========
+
+BSD licensed.
