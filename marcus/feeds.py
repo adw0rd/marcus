@@ -62,7 +62,7 @@ class ContentFeed(views.Feed):
 
     def etag(self, request, *args, **kwargs):
         obj, language = self.get_object(request, *args, **kwargs)
-        qs = self.get_query_set(obj, language)
+        qs = self.get_queryset(obj, language)
         if not qs:
             return None
         return md5(str((self.updated(qs[0]), language))).hexdigest()
@@ -85,7 +85,7 @@ class ArticleFeed(object):
         return self.author.scipio_profile
 
     def items(self, (obj, language)):
-        qs = self.get_query_set(obj, language)[:settings.MARCUS_ITEMS_IN_FEED]
+        qs = self.get_queryset(obj, language)[:settings.MARCUS_ITEMS_IN_FEED]
         return [models.Translation(a, language) for a in qs]
 
     def item_pubdate(self, article):
@@ -103,7 +103,7 @@ class Article(ArticleFeed, ContentFeed):
     def link(self, (obj, language)):
         return utils.iurl(reverse('marcus-index'), language)
 
-    def get_query_set(self, obj, language):
+    def get_queryset(self, obj, language):
         return models.Article.public.language(language)
 
 
@@ -120,7 +120,7 @@ class Category(ArticleFeed, ContentFeed):
     def link(self, (category, language)):
         return utils.iurl(reverse('marcus-category', args=[category.slug]), language)
 
-    def get_query_set(self, category, language):
+    def get_queryset(self, category, language):
         return models.Article.public.language(language).filter(categories=category)
 
 
@@ -137,7 +137,7 @@ class Tag(ArticleFeed, ContentFeed):
     def link(self, (tag, language)):
         return utils.iurl(reverse('marcus-tag', args=[tag.slug]), language)
 
-    def get_query_set(self, tag, language):
+    def get_queryset(self, tag, language):
         return models.Article.public.language(language).filter(tags=tag)
 
 
@@ -151,7 +151,7 @@ class CommentFeed(object):
         return u'%s » %s' % (settings.MARCUS_TITLE, _(u'comments'))
 
     def items(self, (obj, language)):
-        qs = self.get_query_set(obj, language).select_related(
+        qs = self.get_queryset(obj, language).select_related(
             'author', 'author__scipio_profile', 'article', 'article__author'
         )[:settings.MARCUS_ITEMS_IN_FEED]
         return [models.Translation(c, language) for c in qs]
@@ -180,7 +180,7 @@ class Comment(CommentFeed, ContentFeed):
     def link(self, (obj, language)):
         return utils.iurl(reverse('marcus-index'), language)
 
-    def get_query_set(self, obj, language):
+    def get_queryset(self, obj, language):
         return models.Comment.public.language(language).order_by('-created')
 
 
@@ -203,7 +203,7 @@ class ArticleComment(CommentFeed, ContentFeed):
         article = models.Translation(article, language)
         return article.get_absolute_url()
 
-    def get_query_set(self, article, language):
+    def get_queryset(self, article, language):
         return models.Comment.public.language(language).filter(article=article).order_by('-created')
 
 

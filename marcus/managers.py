@@ -7,7 +7,7 @@ from marcus.queryset import MarcusManager
 class CommonLanguageManager(MarcusManager):
 
     def language(self, code):
-        queryset = self.get_query_set()
+        queryset = self.get_queryset()
         if code == 'en':
             queryset = queryset.exclude(title_en='')
         elif code == 'ru':
@@ -16,8 +16,8 @@ class CommonLanguageManager(MarcusManager):
 
 
 class PublicArticlesManager(CommonLanguageManager):
-    def get_query_set(self):
-        return super(PublicArticlesManager, self).get_query_set()\
+    def get_queryset(self):
+        return super(PublicArticlesManager, self).get_queryset()\
             .exclude(published=None).order_by('-published')
 
 
@@ -29,7 +29,7 @@ class CategoryManager(CommonLanguageManager):
 
     def popular(self, code):
         order_by = ['-essential']
-        queryset = self.get_query_set()
+        queryset = self.get_queryset()
         if code == "en":
             order_by.append('-count_articles_en')
             queryset = queryset.filter(count_articles_en__gt=0)
@@ -42,7 +42,7 @@ class CategoryManager(CommonLanguageManager):
 class TagManager(CategoryManager):
     def popular(self, code):
         order_by = []
-        queryset = self.get_query_set()
+        queryset = self.get_queryset()
         if code == "en":
             order_by.append('-count_articles_en')
             queryset = queryset.filter(count_articles_en__gt=0)
@@ -56,20 +56,20 @@ class TagManager(CategoryManager):
 
 class CommentsManager(models.Manager):
     def language(self, code):
-        queryset = self.get_query_set()
+        queryset = self.get_queryset()
         if code:
             queryset = queryset.filter(language=code)
         return queryset
 
 
 class PublicCommentsManager(CommentsManager):
-    def get_query_set(self):
-        return super(PublicCommentsManager, self).get_query_set()\
+    def get_queryset(self):
+        return super(PublicCommentsManager, self).get_queryset()\
             .exclude(approved=None).order_by('created')
 
 
 class SuspectedCommentsManager(models.Manager):
-    def get_query_set(self):
-        return super(SuspectedCommentsManager, self).get_query_set()\
+    def get_queryset(self):
+        return super(SuspectedCommentsManager, self).get_queryset()\
             .filter(approved=None).exclude(spam_status='clean')\
             .order_by('-created')

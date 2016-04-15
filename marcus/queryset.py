@@ -1,4 +1,5 @@
 from django.db import models
+from django.apps import apps
 from django.conf import settings
 
 MARCUS_SEARCH_FIELDS = ['title_ru', 'title_en', 'text_ru', 'text_en', ]
@@ -21,12 +22,12 @@ class MarcusQuerySet(models.query.QuerySet):
 
 
 class MarcusManager(models.Manager):
-    def get_query_set(self):
-        model = models.get_model(self.model._meta.app_label, self.model._meta.object_name)
+    def get_queryset(self):
+        model = apps.get_model(self.model._meta.app_label, self.model._meta.object_name)
         return MarcusQuerySet(model)
 
     def __getattr__(self, attr, *args):
         try:
             return getattr(self.__class__, attr, *args)
         except AttributeError:
-            return getattr(self.get_query_set(), attr, *args)
+            return getattr(self.get_queryset(), attr, *args)

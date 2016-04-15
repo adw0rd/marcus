@@ -241,7 +241,7 @@ class Article(models.Model):
     def get_admin_url(self):
         viewname = "admin:{0}_{1}_change".format(
             self._meta.app_label,
-            self._meta.module_name)
+            self._meta.model_name)
         return reverse(viewname, args=(self.pk, ))
 
     def title(self, language=None):
@@ -322,7 +322,7 @@ class Comment(models.Model):
     guest_name = models.CharField(max_length=255, blank=True)
     guest_email = models.CharField(max_length=200, blank=True, default='')
     guest_url = models.URLField(blank=True)
-    ip = models.IPAddressField(default='127.0.0.1')
+    ip = models.GenericIPAddressField(default='127.0.0.1')
     spam_status = models.CharField(max_length=20, blank=True, default='')
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     approved = models.DateTimeField(null=True, blank=True, db_index=True)
@@ -351,7 +351,7 @@ class Comment(models.Model):
     def get_admin_url(self):
         viewname = "admin:{0}_{1}_change".format(
             self._meta.app_label,
-            self._meta.module_name)
+            self._meta.model_name)
         return reverse(viewname, args=(self.pk, ))
 
     def html(self):

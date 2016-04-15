@@ -1,4 +1,5 @@
-from django.contrib.sitemaps import FlatPageSitemap, GenericSitemap
+from django.contrib.sitemaps import GenericSitemap
+from django.contrib.flatpages.sitemaps import FlatPageSitemap
 
 from marcus import models
 

@@ -53,13 +53,14 @@ class ArticleUploadInlineAdmin(admin.TabularInline):
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = models.Article
+        fields = '__all__'
         widgets = {
             'title_ru': forms.TextInput(attrs={'size': 80}),
             'text_ru': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
             'title_en': forms.TextInput(attrs={'size': 80}),
             'text_en': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
         }
-    
+
     def clean(self):
         cleaned_data = super(ArticleForm, self).clean()
         title_ru = cleaned_data['title_ru']
@@ -69,17 +70,16 @@ class ArticleForm(forms.ModelForm):
 
         if (not title_ru and not text_ru) and (not title_en and not text_en):
             raise forms.ValidationError("Need to fill 'Title ru' or 'Title en'")
-        
+
         if not title_ru and text_ru:
             self._errors['title_ru'] = self.error_class(["Need to fill 'Title ru'"])
             del cleaned_data['title_ru']
-        
+
         if not title_en and text_en:
             self._errors['title_en'] = self.error_class(["Need to fill 'Title en'"])
             del cleaned_data['title_en']
-        
-        return cleaned_data
 
+        return cleaned_data
 
 
 class ArticleAdmin(mixins.ArticleTextSizeAdminMixin, admin.ModelAdmin):

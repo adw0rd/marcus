@@ -12,7 +12,8 @@ def create_system_user(username):
 
 def init(sender, **kwargs):
     import marcus.models
-    if kwargs['app'] == marcus.models:
+
+    if kwargs['app_config'].models_module == marcus.models:
         create_system_user('marcus_guest')
 
-signals.post_syncdb.connect(init)
+signals.post_migrate.connect(init)
