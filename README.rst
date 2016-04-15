@@ -249,3 +249,16 @@ Go to https://akismet.com/signup/, get a **key** and enter it here::
     SCIPIO_AKISMET_KEY = '<key>'
 
 After installation, going to http://localhost:8000/admin/scipio/profile/ and create you profile.
+
+MySQL Timezone Fixes
+=====================
+
+If you use MySQL and have problem with open an article by URL, it is likely that you did not work ``CONVERT_TZ``, it can be solved as follows::
+
+    mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql
+
+
+License
+========
+
+BSD licensed.
