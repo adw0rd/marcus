@@ -4,3 +4,4 @@
 /venv/
 dist/
 django_marcus.egg-info/
+.eggs/
