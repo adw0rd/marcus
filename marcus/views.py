@@ -39,7 +39,7 @@ def object_list(request, queryset, template_name, context):
 def superuser_required(func):
     def wrapper(request, *args, **kwargs):
         if not request.user.is_authenticated() or not request.user.is_superuser:
-            return http.HttpResponseForbidden('Superuser required', mimetype='text/plain')
+            return http.HttpResponseForbidden('Superuser required', content_type='text/plain')
         return func(request, *args, **kwargs)
     return wrapper
 
@@ -369,13 +369,13 @@ def article_upload_image_preview(request, object_id):
     try:
         image = Image.open(image_path.encode('utf-8'))
     except:
-        return http.HttpResponse("Not a image", mimetype="text/html")
+        return http.HttpResponse("Not a image", content_type="text/html")
 
     buffer = StringIO.StringIO()
     max_width = max_width if max_width < image.size[0] else image.size[0]
     height = int((float(image.size[1]) * float(max_width / float(image.size[0]))))
     image.resize((max_width, height), Image.ANTIALIAS).save(buffer, "PNG")
-    return http.HttpResponse(buffer.getvalue(), mimetype="image/png")
+    return http.HttpResponse(buffer.getvalue(), content_type="image/png")
 
 
 def search(request, language):
@@ -419,7 +419,7 @@ def article_comments_unsubscribe(request, article_id, token, language):
             break
     else:
         return http.HttpResponseForbidden(
-            'Token is failed or expired!', mimetype='text/plain')
+            'Token is failed or expired!', content_type='text/plain')
 
     return render(request, 'marcus/unsubscribe.html', {
         'article_link': mark_safe(article.link(language)),

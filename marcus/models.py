@@ -8,7 +8,6 @@ import itertools
 from scipio.models import Profile
 
 from django.db import models
-from django.db import transaction
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
@@ -201,8 +200,6 @@ class Article(models.Model):
         already_published = bool(Article.objects.filter(pk=self.pk).exclude(published=None))
         super(Article, self).save(**kwargs)
         if self.published:
-            if not transaction.get_autocommit():
-                transaction.commit()
             if not already_published:
                 self._pingback()
 
