@@ -201,7 +201,7 @@ class Article(models.Model):
         already_published = bool(Article.objects.filter(pk=self.pk).exclude(published=None))
         super(Article, self).save(**kwargs)
         if self.published:
-            if transaction.is_managed():
+            if not transaction.get_autocommit():
                 transaction.commit()
             if not already_published:
                 self._pingback()
