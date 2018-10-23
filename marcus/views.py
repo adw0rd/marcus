@@ -1,7 +1,6 @@
 # coding: utf-8
 import json
 import scipio
-import pingdjack
 import datetime
 from scipio.forms import AuthForm
 
@@ -15,7 +14,6 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect
 from django.utils import translation
 from django.contrib import auth
-from django.contrib.auth.models import User
 from django.conf import settings
 
 from marcus import models, forms, antispam, utils
@@ -280,7 +278,6 @@ def acquire_comment(sender, user, acquire=None, language=None, **kwargs):
         _process_new_comment(sender, comment, language, False)
     except models.Comment.DoesNotExist:
         pass
-scipio.signals.authenticated.connect(acquire_comment)
 
 
 @superuser_required
@@ -338,25 +335,6 @@ def comment_preview(request):
     )
 
 
-def handle_pingback(sender, source_url, view, args, author, excerpt, **kwargs):
-    if view != article:
-        raise pingdjack.UnpingableTarget
-    a = models.Article.objects.get(slug=args[3])
-    if a.comments.filter(type='pingback', guest_url=source_url):
-        raise pingdjack.DuplicatePing
-    a.comments.create(
-        type='pingback',
-        text=excerpt,
-        author=User.objects.get(username='marcus_guest'),
-        guest_name=author,
-        guest_url=source_url,
-        ip=get_ip(sender),
-        language=a.comment_language(args[4]),
-        approved=timezone.now(),
-    )
-pingdjack.received.connect(handle_pingback)
-
-
 def article_upload_image_preview(request, object_id):
     max_width = 300
     image_path = get_object_or_404(models.ArticleUpload, pk=object_id).upload.path
@@ -368,7 +346,7 @@ def article_upload_image_preview(request, object_id):
         import Image
     try:
         image = Image.open(image_path.encode('utf-8'))
-    except:
+    except Exception:
         return http.HttpResponse("Not a image", content_type="text/html")
 
     buffer = StringIO.StringIO()
@@ -425,3 +403,6 @@ def article_comments_unsubscribe(request, article_id, token, language):
         'article_link': mark_safe(article.link(language)),
         'guest_name': found_comment.guest_name or found_comment.guest_email,
     })
+
+
+scipio.signals.authenticated.connect(acquire_comment)

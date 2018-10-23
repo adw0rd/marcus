@@ -1,5 +1,3 @@
-import pingdjack
-
 from django.conf.urls import patterns, include, url
 
 from marcus import views, feeds
@@ -29,9 +27,7 @@ urlpatterns = patterns(
     url(r'^(\d{4})/(\d{1,2})/(\d{1,2})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleComment(), name='marcus-article-comments-feed'),
     url(r'^(\d{4})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleCommentShort(), name="marcus-article-comments-feed-short"),
     url(r'^comments/unsubscribe/(\d+)/(\w+)/(?:(en|ru)/)?$', views.article_comments_unsubscribe, name="marcus-article-comments-unsubscribe"),
-
     url(r'^comment_preview/$', views.comment_preview, name='marcus-comment-preview'),
-    url(r'^pingback/$', pingdjack.server_view, name='marcus-pingback'),
 
     url(r'^(\d{4})/(\d{1,2})/(\d{1,2})/([^/]+)/(?:(en|ru)/)?$', views.article, name='marcus-article'),
     url(r'^(\d{4})/([^/]+)/(?:(en|ru)/)?$', views.article_short, name='marcus-article-short'),

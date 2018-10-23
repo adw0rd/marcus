@@ -2,7 +2,6 @@ import re
 import hashlib
 import pytils
 import markdown2
-import pingdjack
 import itertools
 
 from scipio.models import Profile
@@ -184,24 +183,10 @@ class Article(models.Model):
     def __unicode__(self):
         return self.slug
 
-    def _pingback(self):
-        if settings.DEBUG:
-            return None
-        language = 'en' if self.text_en else None
-        pingdjack.ping_external_urls(
-            utils.absolute_url(self.get_absolute_url(language)),
-            self.html(language),
-            utils.absolute_url(utils.iurl(reverse('marcus-index'), language))
-        )
-
     def save(self, **kwargs):
         if not self.slug:
             self.slug = pytils.translit.slugify(self.title_ru or self.title_en)
-        already_published = bool(Article.objects.filter(pk=self.pk).exclude(published=None))
-        super(Article, self).save(**kwargs)
-        if self.published:
-            if not already_published:
-                self._pingback()
+        return super(Article, self).save(**kwargs)
 
     def only_language(self):
         return None if (self.text_en and self.text_ru) else 'en' if self.text_en else 'ru'
@@ -291,10 +276,11 @@ class Article(models.Model):
         return [tag.anchor(language) for tag in self.tags.all()]
     tags_links.needs_language = True
 
+
 COMMENT_TYPES = (
     ('comment', _('Comment')),
-    ('pingback', u'Pingback'),
 )
+
 
 LANGUAGES = (
     ('ru', _(u'Russian')),
@@ -386,7 +372,6 @@ def update_tag_and_category_counts(sender, instance, created, **kwargs):
         if instance.text_ru:
             o.count_articles_ru = o.article_count(language="ru")
         o.save()
-post_save.connect(update_tag_and_category_counts, sender=Article)
 
 
 def notify_followers(sender, instance, created, **kwargs):
@@ -394,4 +379,7 @@ def notify_followers(sender, instance, created, **kwargs):
         utils.notify_comment_followers(instance)
     if not instance.spam_status:
         utils.notify_comment_managers(instance)
+
+
+post_save.connect(update_tag_and_category_counts, sender=Article)
 post_save.connect(notify_followers, sender=Comment)
