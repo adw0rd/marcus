@@ -1,6 +1,5 @@
 import re
 import os
-import sys
 
 from setuptools import setup, find_packages
 from setuptools.command.install_lib import install_lib as _install_lib
@@ -21,14 +20,10 @@ class compile_translations(Command):
         pass
 
     def run(self):
-        from django.core.management.commands.compilemessages import Command as CompileMessages
-
+        from django.core.management import call_command
         curdir = os.getcwd()
         os.chdir(os.path.join(os.path.dirname(__file__), 'marcus'))
-        cmd = CompileMessages()
-        cmd.stdout = sys.stdout
-        cmd.stderr = sys.stderr
-        cmd.handle(verbosity=4)
+        call_command('compilemessages')
         os.chdir(curdir)
 
 
@@ -70,7 +65,7 @@ try:
     readme = open("README.rst")
     long_description = str(readme.read())
     readme.close()
-except:
+except Exception:
     pass
 
 setup(
