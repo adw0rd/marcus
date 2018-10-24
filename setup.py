@@ -48,7 +48,7 @@ try:
         line = line.strip()
         if line and not line.startswith('#'):  # for inline comments
             if "#egg" in line:
-                names = re.findall('#egg=([^-]+)-?', line)
+                names = re.findall('#egg=(.+)', line)
                 install_requires.append(names[0])
                 links = [link for link in line.split() if '://' in link]
                 dependency_links.append(links[0])
