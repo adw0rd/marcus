@@ -1,9 +1,14 @@
+import logging
+
 from django import forms
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User
 
 from marcus import models
 from marcus.utils import get_language_code_in_text
+
+
+logger = logging.getLogger(__name__)
 
 
 def model_field(model, fieldname, **kwargs):
@@ -52,6 +57,9 @@ class CommentForm(forms.Form):
 
     def save(self):
         guest_email = self.cleaned_data.get('xemail')
+        logger.error('CommentForm save data: %s', [
+            self.cleaned_data, self.user, self.ip, guest_email
+        ])
         return self.article.comments.create(
             type='comment',
             text=self.cleaned_data['text'],
