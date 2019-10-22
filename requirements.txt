@@ -1,4 +1,4 @@
-Django==1.9
+Django==1.11.23
 pytils>=0.3
 Pillow>=2.8.1
 html5lib>=0.9999999
