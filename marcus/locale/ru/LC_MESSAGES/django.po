@@ -28,8 +28,8 @@ msgid "comments"
 msgstr "комментарии"
 
 #: marcus/forms.py:19
-msgid "Name or OpenID"
-msgstr "Имя или OpenID"
+msgid "Name"
+msgstr "Имя"
 
 #: marcus/forms.py:21
 msgid "Email for notifications"

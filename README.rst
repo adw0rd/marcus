@@ -1,7 +1,7 @@
 Introduction
 ============
 
-Marcus is billingual blog engine, written Ivan Sagalaev (http://softwaremaniacs.org/about/).
+Marcus is billingual blog engine, written Ivan Sagalaev (https://softwaremaniacs.org/about/).
 
 This fork over augmented and has the following features:
 
@@ -10,9 +10,8 @@ This fork over augmented and has the following features:
 * Archive and date navigation
 * Pingback
 * Automatically pings search engines on new entries
-* Supports markdown (http://pypi.python.org/pypi/markdown2)
-* Comments have CSRF protection via JavaScript, supported Akismet (antispam service)
-* There are authentication via OpenID, or by login with pre-moderated
+* Supports markdown (https://pypi.python.org/pypi/markdown2)
+* Comments have CSRF protection via JavaScript
 * There is support for retweet button
 * Sitemaps for articles, feeds for articles and comments
 * A simple search module
@@ -23,16 +22,16 @@ This fork over augmented and has the following features:
 Examples
 ============
 
-* http://softwaremaniacs.org/blog/ (Ivan Sagalaev)
+* https://softwaremaniacs.org/blog/ (Ivan Sagalaev)
 * https://prudnitskiy.pro/ (Pavel Rudnitskiy)
-* http://adw0rd.com/ (Mikhail Andreev)
+* https://adw0rd.com/ (Mikhail Andreev)
 
 About marcus
 =============
 
-* http://softwaremaniacs.org/blog/2010/07/19/marcus-bilingual-blog/
-* http://softwaremaniacs.org/blog/2012/10/21/marcus-new-life/
-* http://adw0rd.com/2012/8/8/goodbye-wordpress/
+* https://softwaremaniacs.org/blog/2010/07/19/marcus-bilingual-blog/
+* https://softwaremaniacs.org/blog/2012/10/21/marcus-new-life/
+* https://adw0rd.com/2012/8/8/goodbye-wordpress/
 
 Screenshots:
 =============
@@ -50,7 +49,7 @@ Screenshots:
 Installation
 =============
 
-http://pypi.python.org/pypi/django-marcus
+https://pypi.python.org/pypi/django-marcus
 ::
 
     mkvirtualenv marcus
@@ -106,24 +105,8 @@ Add to ``settings.py``::
         'slug', 'title_ru', 'title_en', 'text_ru', 'text_en',
         'categories__slug', 'categories__title_ru', 'categories__title_en',
     ]
-    
-    # OpenID sessions dir. OpenID authentication will not work without it.
-    SCIPIO_STORE_ROOT = os.path.join(STORAGE_ROOT, 'scipio')
-    
-    # URL passed to OpenID-provider to identify site that requests authentication.
-    # Should not end with '/'.
-    # Complete site URL is passed if the value is empty.
-    SCIPIO_TRUST_URL = ''
-    
-    # Akismet is a spam filtering service.
-    # Without the key will not work comments.
-    # You can receive the key here https://akismet.com/signup/
-    SCIPIO_AKISMET_KEY = ''
-    
-    SCIPIO_USE_CONTRIB_SITES = True
-    
+
     AUTHENTICATION_BACKENDS = (
-        'scipio.authentication.OpenIdBackend',
         'django.contrib.auth.backends.ModelBackend',
     )
     
@@ -149,8 +132,7 @@ Add to ``settings.py``::
         'django.contrib.messages',
         'django.contrib.staticfiles',
         'django.contrib.flatpages',
-        'marcus',
-        'scipio',
+        'marcus'
     )
 
 
@@ -176,8 +158,6 @@ And run so::
 
     python ./manage.py runserver 8000
 
-
-After installation, going to http://localhost:8000/admin/scipio/profile/ and create you profile.
 
 
 Wordpress importer settings:
@@ -209,29 +189,6 @@ It has a built-in pipelines for additional filtering data.
     }
 
 
-How enable WYSIWYG?
------------------------------
-
-As an editor was selected MarkitUp (http://markitup.jaysalvat.com/), so you need to install ``django-markitup``::
-
-    pip install django-markitup
-
-Now, add to your ``settings.py``::
-
-    INSTALLED_APPS = (
-        ...
-        'markitup',
-    )
-    
-    MARKITUP_FILTER = ('markdown2.markdown', {'safe_mode': True})
-    MARKITUP_SET = 'marcus/sets/markdown'
-
-And add to your ``urls.py``::
-
-    url(r'^markitup/', include('markitup.urls')),
-
-That's all!
-
 Installation guide for new projects:
 ======================================
 ::
@@ -244,11 +201,6 @@ Installation guide for new projects:
     python ./manage.py createsuperuser
     python ./manage.py runserver 8000
 
-Go to https://akismet.com/signup/, get a **key** and enter it here::
-
-    SCIPIO_AKISMET_KEY = '<key>'
-
-After installation, going to http://localhost:8000/admin/scipio/profile/ and create you profile.
 
 MySQL Timezone Fixes
 =====================

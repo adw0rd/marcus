@@ -9,10 +9,7 @@
         <meta property="og:image" content="{% block og_image %}{% endblock %}"/>
         <meta property="og:description" content="{% block og_description %}{% endblock %}"/>
         {% block meta %}{% endblock %}
-        <!--[if lt IE 9]>
-            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" href="{% static "/static/screen.css" %}" />
+        <link rel="stylesheet" href="{% static '/static/screen.css' %}" />
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
         <style type="text/css">{% block css %}{% endblock %}</style>
         <script type="text/javascript">{% block javascript %}{% endblock %}</script>

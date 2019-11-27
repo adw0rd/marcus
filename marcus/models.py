@@ -4,8 +4,6 @@ import pytils
 import markdown2
 import itertools
 
-from scipio.models import Profile
-
 from django.db import models
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -350,16 +348,10 @@ class Comment(models.Model):
     def author_str(self):
         if self.by_guest():
             return self.guest_name
-        try:
-            return unicode(self.author.scipio_profile)
-        except Profile.DoesNotExist:
-            return unicode(self.author)
+        return str(self.author)
 
     def author_url(self):
-        try:
-            return self.author.scipio_profile.openid
-        except (Profile.DoesNotExist, AttributeError):
-            return None
+        return None
 
 
 def update_tag_and_category_counts(sender, instance, created, **kwargs):

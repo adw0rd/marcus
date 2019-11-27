@@ -1,16 +1,7 @@
 from django import forms
 from django.contrib import admin
 
-try:
-    from markitup.widgets import AdminMarkItUpWidget
-    wysiwyg_widget = AdminMarkItUpWidget
-except ImportError:
-    wysiwyg_widget = forms.Textarea
-
-from marcus import models
-from marcus import actions
-from marcus import widgets
-from marcus import mixins
+from marcus import models, actions, widgets, mixins
 
 
 class TimedBooleanFilter(admin.FieldListFilter):
@@ -31,16 +22,6 @@ class TimedBooleanFilter(admin.FieldListFilter):
             }
 
 
-admin.site.register(
-    models.Category,
-    list_display=('title_ru', 'title_en', 'essential', 'parent', ))
-
-admin.site.register(
-    models.Tag,
-    list_display=('slug', 'title_ru', 'count_articles_ru', 'title_en', 'count_articles_en', ),
-    search_fields=('title_ru', 'title_en', ))
-
-
 class ArticleUploadForm(forms.ModelForm):
     upload = forms.FileField(widget=widgets.AdminImageWidget)
 
@@ -56,9 +37,9 @@ class ArticleForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'title_ru': forms.TextInput(attrs={'size': 80}),
-            'text_ru': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
+            'text_ru': forms.Textarea(attrs={'cols': 80, 'rows': 30}),
             'title_en': forms.TextInput(attrs={'size': 80}),
-            'text_en': wysiwyg_widget(attrs={'cols': 80, 'rows': 30}),
+            'text_en': forms.Textarea(attrs={'cols': 80, 'rows': 30}),
         }
 
     def clean(self):
@@ -98,13 +79,9 @@ class ArticleAdmin(mixins.ArticleTextSizeAdminMixin, admin.ModelAdmin):
         return bool(obj.published)
     is_published.boolean = True
 
-admin.site.register(models.Article, ArticleAdmin)
-
 
 class ArticleUploadAdmin(admin.ModelAdmin):
     pass
-
-admin.site.register(models.ArticleUpload, ArticleUploadAdmin)
 
 
 class CommentAdmin(admin.ModelAdmin):
@@ -115,7 +92,7 @@ class CommentAdmin(admin.ModelAdmin):
     ordering = ('-created', )
     select_related = ('article', )
     raw_id_fields = ('author', 'article', )
-    search_fields = ('article__slug', 'author__username', 'author__scipio_profile__openid', )
+    search_fields = ('article__slug', 'author__username', )
 
     def is_approved(self, obj):
         return bool(obj.approved)
@@ -126,4 +103,14 @@ class CommentAdmin(admin.ModelAdmin):
     created_str.admin_order_field = 'created'
     created_str.short_description = 'created'
 
+
+admin.site.register(
+    models.Category,
+    list_display=('title_ru', 'title_en', 'essential', 'parent', ))
+admin.site.register(
+    models.Tag,
+    list_display=('slug', 'title_ru', 'count_articles_ru', 'title_en', 'count_articles_en', ),
+    search_fields=('title_ru', 'title_en', ))
+admin.site.register(models.Article, ArticleAdmin)
+admin.site.register(models.ArticleUpload, ArticleUploadAdmin)
 admin.site.register(models.Comment, CommentAdmin)

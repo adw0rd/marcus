@@ -17,13 +17,13 @@ def model_field(model, fieldname, **kwargs):
 
 class CommentForm(forms.Form):
     text = model_field(
-        models.Comment, 'text', label=_(u'Text'), widget=forms.Textarea(attrs={'cols': '80', 'rows': '20'}))
+        models.Comment, 'text', label=_('Text'), widget=forms.Textarea(attrs={'cols': '80', 'rows': '20'}))
     language = model_field(
         models.Comment, 'language', required=False)
     name = forms.CharField(
-        label=_(u'Name or OpenID'), required=False)
+        label=_('Name'), required=False)
     xemail = forms.EmailField(
-        label=_(u'Email for notifications'), required=False)
+        label=_('Email for notifications'), required=False)
 
     def __init__(self, user=None, ip=None, article=None, language=None, *args, **kwargs):
         super(CommentForm, self).__init__(*args, **kwargs)
@@ -43,16 +43,16 @@ class CommentForm(forms.Form):
         if not self.cleaned_data['language']:
             language = get_language_code_in_text(self.data.get('text', ''))
         else:
-            raise forms.ValidationError(_(u'This field is required.'))
+            raise forms.ValidationError(_('This field is required.'))
         return language
 
     def clean_name(self):
         if self.user.username != 'marcus_guest':
-            return u''
+            return ''
         if not self.cleaned_data['name']:
-            raise forms.ValidationError(_(u'This field is required.'))
+            raise forms.ValidationError(_('This field is required.'))
         if User.objects.filter(username=self.cleaned_data['name']).exists():
-            raise forms.ValidationError(_(u'This name is already taken.'))
+            raise forms.ValidationError(_('This name is already taken.'))
         return self.cleaned_data['name']
 
     def save(self):

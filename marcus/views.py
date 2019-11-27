@@ -1,8 +1,5 @@
-# coding: utf-8
 import json
-import scipio
 import datetime
-from scipio.forms import AuthForm
 
 from django import http
 from django.db.models import Q
@@ -13,7 +10,6 @@ from django.core.urlresolvers import reverse
 from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect
 from django.utils import translation
-from django.contrib import auth
 from django.conf import settings
 
 from marcus import models, forms, antispam, utils
@@ -177,12 +173,6 @@ def _process_new_comment(request, comment, language, check_login):
             'text': comment.text,
             'admins': [e for n, e in settings.ADMINS],
         })
-    if check_login and not request.user.is_authenticated():
-        form = AuthForm(request.session, {'openid_identifier': request.POST['name']})
-        if form.is_valid():
-            comment = models.Translation(comment, language)
-            url = form.auth_redirect(request, target=comment.get_absolute_url(), data={'acquire': str(comment.pk)})
-            return redirect(url)
     comment.spam_status = spam_status
     if spam_status == 'clean':
         comment.approved = timezone.now()
@@ -218,7 +208,7 @@ def article(request, year, month, day, slug, language):
         form = forms.CommentForm(article=obj, language=language)
 
     comments = models.Comment.common.language(language)\
-        .select_related('author', 'author__scipio_profile', 'article')\
+        .select_related('author', 'article')\
         .filter(article=obj, type="comment")\
         .filter(Q(guest_name=guest_name) | ~Q(approved=None))\
         .order_by('created', 'approved')
@@ -267,19 +257,6 @@ def draft(request, pk, language):
     })
 
 
-def acquire_comment(sender, user, acquire=None, language=None, **kwargs):
-    if acquire is None:
-        return
-    try:
-        auth.login(sender, user)
-        comment = models.Comment.objects.get(pk=acquire)
-        comment.author = user
-        comment.save()
-        _process_new_comment(sender, comment, language, False)
-    except models.Comment.DoesNotExist:
-        pass
-
-
 @superuser_required
 @require_POST
 def approve_comment(request, id):
@@ -287,11 +264,6 @@ def approve_comment(request, id):
     antispam.conveyor.submit_ham(comment.spam_status, comment=comment)
     comment.approved = timezone.now()
     comment.save()
-    if not comment.by_guest():
-        scipio_profile = comment.author.scipio_profile
-        if scipio_profile.spamer is None:
-            scipio_profile.spamer = False
-            scipio_profile.save()
     return redirect(spam_queue)
 
 
@@ -299,11 +271,6 @@ def approve_comment(request, id):
 @require_POST
 def spam_comment(request, id):
     comment = get_object_or_404(models.Comment, pk=id)
-    if not comment.by_guest():
-        scipio_profile = comment.author.scipio_profile
-        if scipio_profile.spamer is None:
-            scipio_profile.spamer = True
-            scipio_profile.save()
     antispam.conveyor.submit_spam(comment=comment)
     comment.delete()
     return redirect(comment.article)
@@ -403,6 +370,3 @@ def article_comments_unsubscribe(request, article_id, token, language):
         'article_link': mark_safe(article.link(language)),
         'guest_name': found_comment.guest_name or found_comment.guest_email,
     })
-
-
-scipio.signals.authenticated.connect(acquire_comment)

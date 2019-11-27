@@ -38,6 +38,4 @@ urlpatterns = patterns(
 
     url(r'^articleuploadimage/preview/(\d+)/$', views.article_upload_image_preview, name="article-upload-image-preview"),
     url(r'^sitemap', include('marcus.sitemap_urls')),
-
-    url(r'^', include('scipio.urls')),
 )

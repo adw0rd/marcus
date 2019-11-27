@@ -82,7 +82,7 @@ class ArticleFeed(object):
     subtitle = settings.MARCUS_SUBTITLE
 
     def author_name(self):
-        return self.author.scipio_profile
+        return self.author.username
 
     def items(self, (obj, language)):
         qs = self.get_queryset(obj, language)[:settings.MARCUS_ITEMS_IN_FEED]
@@ -152,7 +152,7 @@ class CommentFeed(object):
 
     def items(self, (obj, language)):
         qs = self.get_queryset(obj, language).select_related(
-            'author', 'author__scipio_profile', 'article', 'article__author'
+            'author', 'article', 'article__author'
         )[:settings.MARCUS_ITEMS_IN_FEED]
         return [models.Translation(c, language) for c in qs]
 
