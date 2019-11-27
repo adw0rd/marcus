@@ -37,7 +37,7 @@ class TreeNode(template.Node):
                 head = None
                 try:
                     while True:
-                        item = items.next()
+                        item = next(items)
                         if isinstance(item, (list, tuple)):
                             yield head, item
                             head = None

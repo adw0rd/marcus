@@ -20,17 +20,17 @@ class ContentAtom1Feed(Atom1Feed):
         super(ContentAtom1Feed, self).add_root_elements(handler)
         hub_link = self.feed.get('hub_link')
         if hub_link is not None:
-            handler.addQuickElement(u'link', '', {
-                u'rel': u'hub',
-                u'href': hub_link,
+            handler.addQuickElement('link', '', {
+                'rel': 'hub',
+                'href': hub_link,
             })
         image_url = getattr(settings, 'MARCUS_FEED_IMAGE', '')
-        handler.addQuickElement(u'logo', image_url, {})
+        handler.addQuickElement('logo', image_url, {})
 
     def add_item_elements(self, handler, item):
         super(ContentAtom1Feed, self).add_item_elements(handler, item)
         if item['content'] is not None:
-            handler.addQuickElement(u'content', item['content'], {u'type': u'html', u'xml:base': item['link']})
+            handler.addQuickElement('content', item['content'], {'type': 'html', 'xml:base': item['link']})
 
 
 def viewmethod(view):
@@ -84,7 +84,7 @@ class ArticleFeed(object):
     def author_name(self):
         return self.author.username
 
-    def items(self, (obj, language)):
+    def items(self, obj, language):
         qs = self.get_queryset(obj, language)[:settings.MARCUS_ITEMS_IN_FEED]
         return [models.Translation(a, language) for a in qs]
 
@@ -96,11 +96,12 @@ class ArticleFeed(object):
 
 
 class Article(ArticleFeed, ContentFeed):
+
     def get_object(self, request, language):
         translation.activate(language or 'ru')
         return None, language
 
-    def link(self, (obj, language)):
+    def link(self, obj, language):
         return utils.iurl(reverse('marcus-index'), language)
 
     def get_queryset(self, obj, language):
@@ -113,11 +114,11 @@ class Category(ArticleFeed, ContentFeed):
         category = get_object_or_404(models.Category, slug=slug)
         return category, language
 
-    def title(self, (category, language)):
+    def title(self, category, language):
         category = models.Translation(category, language)
-        return u'%s » %s' % (settings.MARCUS_TITLE, category.title())
+        return '%s » %s' % (settings.MARCUS_TITLE, category.title())
 
-    def link(self, (category, language)):
+    def link(self, category, language):
         return utils.iurl(reverse('marcus-category', args=[category.slug]), language)
 
     def get_queryset(self, category, language):
@@ -125,16 +126,17 @@ class Category(ArticleFeed, ContentFeed):
 
 
 class Tag(ArticleFeed, ContentFeed):
+
     def get_object(self, request, slug, language):
         translation.activate(language or 'ru')
         tag = get_object_or_404(models.Tag, slug=slug)
         return tag, language
 
-    def title(self, (tag, language)):
+    def title(self, tag, language):
         tag = models.Translation(tag, language)
-        return u'%s » %s' % (settings.MARCUS_TITLE, tag.title())
+        return '%s » %s' % (settings.MARCUS_TITLE, tag.title())
 
-    def link(self, (tag, language)):
+    def link(self, tag, language):
         return utils.iurl(reverse('marcus-tag', args=[tag.slug]), language)
 
     def get_queryset(self, tag, language):
@@ -148,9 +150,9 @@ class CommentFeed(object):
     subtitle = settings.MARCUS_SUBTITLE
 
     def title(self):
-        return u'%s » %s' % (settings.MARCUS_TITLE, _(u'comments'))
+        return '%s » %s' % (settings.MARCUS_TITLE, _('comments'))
 
-    def items(self, (obj, language)):
+    def items(self, obj, language):
         qs = self.get_queryset(obj, language).select_related(
             'author', 'article', 'article__author'
         )[:settings.MARCUS_ITEMS_IN_FEED]
@@ -177,7 +179,7 @@ class Comment(CommentFeed, ContentFeed):
         translation.activate(language or 'ru')
         return None, language
 
-    def link(self, (obj, language)):
+    def link(self, obj, language):
         return utils.iurl(reverse('marcus-index'), language)
 
     def get_queryset(self, obj, language):
@@ -195,11 +197,11 @@ class ArticleComment(CommentFeed, ContentFeed):
             slug=slug,
         ), language
 
-    def title(self, (article, language)):
+    def title(self, article, language):
         article = models.Translation(article, language)
-        return u'%s » %s' % (article.title(), _(u'comments'))
+        return '%s » %s' % (article.title(), _('comments'))
 
-    def link(self, (article, language)):
+    def link(self, article, language):
         article = models.Translation(article, language)
         return article.get_absolute_url()
 

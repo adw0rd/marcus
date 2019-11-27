@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect
 from django.utils import translation
 from django.conf import settings
 
-from marcus import models, forms, antispam, utils
+from marcus import models, forms, antispam
 from marcus.utils import get_object_or_404
 
 
@@ -184,7 +184,7 @@ def _process_new_comment(request, comment, language, check_login):
 
 def article_short(request, year, slug, language):
     obj = get_object_or_404(models.Article, published__year=year, slug=slug)
-    args = [i for i in year, obj.published.month, obj.published.day, slug, language if i]
+    args = [i for i in (year, obj.published.month, obj.published.day, slug, language) if i]
     url = reverse('marcus-article', args=args)
     return redirect(url)
 
@@ -201,7 +201,7 @@ def article(request, year, month, day, slug, language):
         if form.is_valid():
             request.session['guest_name'] = form.cleaned_data.get('name', '')
             request.session['guest_email'] = form.cleaned_data.get('xemail', '')
-            form.cleaned_data['text'] = form.cleaned_data['text'].replace('script', u'sсript')
+            form.cleaned_data['text'] = form.cleaned_data['text'].replace('script', 'sсript')
             comment = form.save()
             return _process_new_comment(request, comment, language, True)
     else:
@@ -222,12 +222,6 @@ def article(request, year, month, day, slug, language):
         if 'unapproved' in request.session:
             del request.session['unapproved']
 
-    retweet_url = u'http://twitter.com/home/?status={title}%20{url}%20{suffix}'.format(
-        title=obj.title(),
-        url=utils.absolute_url(utils.iurl(reverse('marcus-article-short', args=[obj.published.year, obj.slug, ]), language)),
-        suffix=settings.MARCUS_RETWEET_SUFFIX.replace('@', '%40')
-    )
-
     keywords = [tag.title(language) for tag in obj.tags.all()] +\
         [category.title(language) for category in obj.categories.all()]
 
@@ -240,7 +234,6 @@ def article(request, year, month, day, slug, language):
         'language': language,
         'guest_name': guest_name,
         'guest_email': guest_email,
-        'retweet_url': retweet_url,
         'meta_keywords': ", ".join(keywords),
         'meta_description': (obj.intro(language) or "").replace('"', "'"),
     })
@@ -306,7 +299,7 @@ def article_upload_image_preview(request, object_id):
     max_width = 300
     image_path = get_object_or_404(models.ArticleUpload, pk=object_id).upload.path
 
-    import StringIO
+    import io
     try:
         from PIL import Image
     except ImportError:
@@ -316,7 +309,7 @@ def article_upload_image_preview(request, object_id):
     except Exception:
         return http.HttpResponse("Not a image", content_type="text/html")
 
-    buffer = StringIO.StringIO()
+    buffer = io.StringIO()
     max_width = max_width if max_width < image.size[0] else image.size[0]
     height = int((float(image.size[1]) * float(max_width / float(image.size[0]))))
     image.resize((max_width, height), Image.ANTIALIAS).save(buffer, "PNG")
@@ -325,12 +318,12 @@ def article_upload_image_preview(request, object_id):
 
 def search(request, language):
     SEARCH_LANGUAGES = (
-        (None, translation.ugettext_lazy(u'All')),
-        ('en', translation.ugettext_lazy(u'English')),
+        (None, translation.ugettext_lazy('All')),
+        ('en', translation.ugettext_lazy('English')),
     )
     search_query = request.GET.get('s', '')
     search_language = request.GET.get('l', None)
-    if search_language not in dict(SEARCH_LANGUAGES).keys():
+    if search_language not in list(dict(SEARCH_LANGUAGES).keys()):
         search_language = None
 
     language = search_language

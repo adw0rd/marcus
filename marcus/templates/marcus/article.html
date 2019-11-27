@@ -27,7 +27,6 @@
                 {% if request.user.is_staff %}, <a href="{{ article.get_admin_url }}">{% trans "Edit" %}</a>{% endif %}
             </div>
             <div>{% trans "Categories" %}: {{ article.categories_links|safeseq|join:", " }}</div>
-            <div style="float:right"><a id="retweet-article" href="{{ retweet_url }}">{% trans "Retweet" %}</a></div>
             <div>{% trans "Tags" %}: {{ article.tags_links|safeseq|join:", " }}</div>
         </div>
 
@@ -48,14 +47,5 @@
         <link rel="stylesheet" href="{% static "/static/highlight.js/styles/monokai.css" %}" />
         <script type="text/javascript" src="{% static "/static/highlight.js/highlight.pack.js" %}"></script>
         <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
-
-        <script type="text/javascript">
-            document.getElementById('retweet-article').onclick = function() {
-                window.open(this.href, '',
-                   'top=50%,left=50%,width=600,height=300,resizable=1',
-                   'scrolling=no', 'fullscreen=yes,');
-                return false;
-            }
-        </script>
     {% endwith %}
 {% endblock %}

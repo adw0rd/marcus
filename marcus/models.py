@@ -43,7 +43,7 @@ class Translation(object):
             Tags: {{ article.tags_links|safeseq|join:", " }}
         {% endwith %}
         """
-        return unicode(self.obj)
+        return str(self.obj)
 
 
 class Category(models.Model):
@@ -98,7 +98,7 @@ class Category(models.Model):
     article_count.needs_language = True
 
     def anchor(self, language=None):
-        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(language), self.title(language))
+        return '<a href="{0}">{1}</a>'.format(self.get_absolute_url(language), self.title(language))
     anchor.needs_language = True
 
 
@@ -144,7 +144,7 @@ class Tag(models.Model):
     article_count.needs_language = True
 
     def anchor(self, language=None):
-        return u'<a href="{0}">{1}</a>'.format(self.get_absolute_url(language), self.title(language))
+        return '<a href="{0}">{1}</a>'.format(self.get_absolute_url(language), self.title(language))
     anchor.needs_language = True
 
     def count(self, language=None):
@@ -254,7 +254,7 @@ class Article(models.Model):
     intro.needs_language = True
 
     def link(self, language=None):
-        return u'<a href="{url}">{title}</a>'.format(
+        return '<a href="{url}">{title}</a>'.format(
             url=self.get_absolute_url(language),
             title=self.title(language)
         )
@@ -263,7 +263,7 @@ class Article(models.Model):
     def full_link(self, language=None):
         current_site = Site.objects.get_current()
         url = "http://{domain}{url}".format(domain=current_site.domain, url=self.get_absolute_url(language))
-        return u'<a href="{url}">{title}</a>'.format(url=url, title=self.title(language))
+        return '<a href="{url}">{title}</a>'.format(url=url, title=self.title(language))
     html.needs_language = True
 
     def categories_links(self, language=None):
@@ -281,8 +281,8 @@ COMMENT_TYPES = (
 
 
 LANGUAGES = (
-    ('ru', _(u'Russian')),
-    ('en', _(u'English')),
+    ('ru', _('Russian')),
+    ('en', _('English')),
 )
 
 
@@ -297,8 +297,8 @@ class ArticleUpload(models.Model):
 class Comment(models.Model):
     article = models.ForeignKey(Article, related_name='comments')
     type = models.CharField(max_length=20, choices=COMMENT_TYPES)
-    text = models.TextField(_(u'Text'))
-    language = models.CharField(_(u'Language'), max_length=2, choices=LANGUAGES)
+    text = models.TextField(_('Text'))
+    language = models.CharField(_('Language'), max_length=2, choices=LANGUAGES)
     author = models.ForeignKey(User)
     guest_name = models.CharField(max_length=255, blank=True)
     guest_email = models.CharField(max_length=200, blank=True, default='')
@@ -318,11 +318,11 @@ class Comment(models.Model):
     common = managers.CommentsManager()
 
     def make_token(self, salt="something"):
-        secrets = map(unicode, [self.pk, self.guest_email, self.created, self.ip, salt])
-        return hashlib.md5(u":".join(secrets)).hexdigest()
+        secrets = list(map(str, [self.pk, self.guest_email, self.created, self.ip, salt]))
+        return hashlib.md5(":".join(secrets)).hexdigest()
 
     def __unicode__(self):
-        return u'%s, %s, %s' % (self.created.strftime('%Y-%m-%d'), self.article, self.author_str())
+        return '%s, %s, %s' % (self.created.strftime('%Y-%m-%d'), self.article, self.author_str())
 
     def get_absolute_url(self, language=None):
         article = Translation(self.article, language)

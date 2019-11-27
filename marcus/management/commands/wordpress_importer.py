@@ -2,7 +2,7 @@
 import re
 import os
 import sys
-from urllib2 import urlopen
+from urllib.request import urlopen
 from datetime import datetime
 from optparse import make_option
 from xml.etree import ElementTree as ET
@@ -136,7 +136,7 @@ class Command(LabelCommand):
                       "2. Create a new user ?\n"\
                       "Please select a choice: " % self.style.ITEM(author_name)
         while 42:
-            selection = raw_input(smart_str(action_text))
+            selection = input(smart_str(action_text))
             if selection and selection in '12':
                 break
         if selection == '1':
@@ -158,7 +158,7 @@ class Command(LabelCommand):
                             "one of theses usernames:\n"\
                             "%s or 'back'\n"\
                             "Please select a choice: " % ', '.join(usernames)
-                user_selected = raw_input(user_text)
+                user_selected = input(user_text)
                 if user_selected in usernames:
                     break
                 if user_selected == '' and preselected_user:
@@ -170,7 +170,7 @@ class Command(LabelCommand):
         else:
             create_text = "2. Please type the email of " \
                           "the '%s' user or 'back': " % author_name
-            author_mail = raw_input(create_text)
+            author_mail = input(create_text)
             if author_mail.strip() == 'back':
                 return self.migrate_author(author_name)
             try:
@@ -196,7 +196,7 @@ class Command(LabelCommand):
                 parent_title = None
 
             category_data = {'title': title, 'slug': slug, 'parent_title': parent_title}
-            self.write_out(u'> {title}... '.format(title=title))
+            self.write_out('> {title}... '.format(title=title))
 
             for pipeline_path in CATEGORY_PIPELINES:
                 category_data = self._get_pipeline(pipeline_path)(data=category_data).output()
@@ -226,13 +226,13 @@ class Command(LabelCommand):
             slug = tag_node.find('{%s}tag_slug' % WP_NS).text[:50]
 
             tag_data = {'name': name, 'slug': slug}
-            self.write_out(u'> {name}... '.format(name=name))
+            self.write_out('> {name}... '.format(name=name))
 
             for pipeline_path in TAG_PIPELINES:
                 tag_data = self._get_pipeline(pipeline_path)(data=tag_data).output()
 
             tag_name = tag_data.get('name')
-            is_english_tag = bool(re.search(u'[^а-яА-Я]+', tag_name))
+            is_english_tag = bool(re.search('[^а-яА-Я]+', tag_name))
 
             tag_ = dict(title_ru=tag_data.get('name'), slug=tag_data.get('slug'))
             if is_english_tag:
@@ -321,7 +321,7 @@ class Command(LabelCommand):
                     article_data = self._get_pipeline(pipeline_path)(data=article_data).output()
 
                 status = article_data.get('status')
-                self.write_out(u'> {title}, {status}... '.format(title=title, status=status))
+                self.write_out('> {title}, {status}... '.format(title=title, status=status))
 
                 article, created = Article.objects.get_or_create(
                     slug=article_data.get('slug'),
@@ -352,7 +352,7 @@ class Command(LabelCommand):
 
                 self.import_comments(article, item_node.findall('{%s}comment' % WP_NS))
             else:
-                self.write_out(u'> {title}... '.format(title=title), 2)
+                self.write_out('> {title}... '.format(title=title), 2)
                 self.write_out(self.style.NOTICE('SKIPPED (not a post)\n'), 2)
 
     def find_image_id(self, metadatas):
@@ -365,8 +365,8 @@ class Command(LabelCommand):
             post_type = item.find('{%s}post_type' % WP_NS).text
             if post_type == 'attachment' and item.find('{%s}post_id' % WP_NS).text == image_id:
 
-                title = u'Attachment {title}'.format(title=item.find('title').text)
-                self.write_out(u' > {title}... '.format(title=title))
+                title = 'Attachment {title}'.format(title=item.find('title').text)
+                self.write_out(' > {title}... '.format(title=title))
 
                 image_url = item.find('{%s}attachment_url' % WP_NS).text
                 img_tmp = NamedTemporaryFile(delete=True)
@@ -411,8 +411,8 @@ class Command(LabelCommand):
             elif comment_approved == "spam":
                 comment_data['spam_status'] = "spam"  # What should I write here?
 
-            title = u'Comment #{number} by {author}'.format(number=comment_data['id'], author=comment_data['guest_name'])
-            self.write_out(u' > {title}... '.format(title=title))
+            title = 'Comment #{number} by {author}'.format(number=comment_data['id'], author=comment_data['guest_name'])
+            self.write_out(' > {title}... '.format(title=title))
 
             for pipeline_path in COMMENT_PIPELINES:
                 comment_data = self._get_pipeline(pipeline_path)(data=comment_data).output()

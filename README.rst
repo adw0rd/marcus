@@ -12,7 +12,6 @@ This fork over augmented and has the following features:
 * Automatically pings search engines on new entries
 * Supports markdown (https://pypi.python.org/pypi/markdown2)
 * Comments have CSRF protection via JavaScript
-* There is support for retweet button
 * Sitemaps for articles, feeds for articles and comments
 * A simple search module
 * A pretty minimalistic theme
@@ -97,9 +96,6 @@ Add to ``settings.py``::
     # You can specify extras for markdown:
     MARCUS_MARKDOWN_EXTRAS = ['code-friendly', 'wiki-tables']
     
-    # You can specify #hashtag or @name as suffix for Twitter:
-    MARCUS_RETWEET_SUFFIX = "#marcus"
-
     # Specify a fields which will used in search:
     MARCUS_SEARCH_FIELDS = [
         'slug', 'title_ru', 'title_en', 'text_ru', 'text_en',

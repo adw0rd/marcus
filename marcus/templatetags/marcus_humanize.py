@@ -15,7 +15,7 @@ def get_formatted(value, formater):
             dtm = formater.format(localize=localize, naturalday=naturalday)
         else:
             dtm = naturalday
-        return localize if naturalday.find(unicode(value.year)) != -1 else dtm
+        return localize if naturalday.find(str(value.year)) != -1 else dtm
     return value
 
 
@@ -23,4 +23,4 @@ def get_formatted(value, formater):
 def naturaldate(value, formater=None):
     if value:
         value = value.date()
-    return unicode(get_formatted(value, formater)).capitalize()
+    return str(get_formatted(value, formater)).capitalize()

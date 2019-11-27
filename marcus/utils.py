@@ -34,7 +34,7 @@ def get_language_code_in_text(text):
     """
     language = None
     if text:
-        language = "ru" if re.search(u'[а-яА-Я]+', text) else "en"
+        language = "ru" if re.search('[а-яА-Я]+', text) else "en"
     return language
 
 
@@ -47,9 +47,9 @@ def email_text_quote(text, width=10, prefix="|"):
         while words:
             chunk = words[0:width]
             del words[0:width]
-            chunks.append(u"{0} {1}".format(prefix, u" ".join(chunk)))
+            chunks.append("{0} {1}".format(prefix, " ".join(chunk)))
         chunks.append(prefix)
-    return u"\n".join(chunks)
+    return "\n".join(chunks)
 
 
 def notify_comment_context(target_comment):
@@ -78,7 +78,7 @@ def notify_comment_context(target_comment):
 def notify_comment_managers(target_comment):
     """Notify MANAGERS of the blog
     """
-    recipients = dict(settings.MANAGERS).values()
+    recipients = list(dict(settings.MANAGERS).values())
     assert recipients, 'Please setup settings.MANAGERS for notify about new comments'
 
     email = target_comment.guest_email or target_comment.author.email
