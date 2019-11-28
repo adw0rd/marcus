@@ -320,7 +320,7 @@ class Comment(models.Model):
 
     def make_token(self, salt="something"):
         secrets = list(map(str, [self.pk, self.guest_email, self.created, self.ip, salt]))
-        return hashlib.md5(":".join(secrets)).hexdigest()
+        return hashlib.md5(":".join(secrets).encode()).hexdigest()
 
     def __str__(self):
         return '%s, %s, %s' % (self.created.strftime('%Y-%m-%d'), self.article, self.author_str())

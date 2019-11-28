@@ -201,7 +201,8 @@ class ArticleComment(CommentFeed, ContentFeed):
             slug=slug,
         ), language
 
-    def title(self, article, language):
+    def title(self, item):
+        article, language = item
         article = models.Translation(article, language)
         return '%s » %s' % (article.title(), _('comments'))
 
