@@ -1,11 +1,10 @@
-# coding: utf-8
 import re
 
 from django.http import Http404
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.urls import reverse
-from django.template import loader, Context
+from django.template import loader
 from django.shortcuts import get_object_or_404 as goo404
 from django.core.mail import EmailMultiAlternatives
 from django.utils import translation
@@ -89,10 +88,9 @@ def notify_comment_managers(target_comment):
 
     common_context = notify_comment_context(target_comment)
     common_context['comment_admin_url'] = target_comment.get_admin_url()
-    context = Context(common_context)
-    text_message = loader.get_template("marcus/emails/managers_comment.txt").render(context)
-    html_message = loader.get_template("marcus/emails/managers_comment.html").render(context)
-    subject = loader.get_template("marcus/emails/managers_comment_subject.txt").render(context).strip()
+    text_message = loader.get_template("marcus/emails/managers_comment.txt").render(common_context)
+    html_message = loader.get_template("marcus/emails/managers_comment.html").render(common_context)
+    subject = loader.get_template("marcus/emails/managers_comment_subject.txt").render(common_context).strip()
     return send_email(subject, text_message, html_message, recipients)
 
 
@@ -130,7 +128,6 @@ def notify_comment_followers(target_comment):
             'unsubscribe_url': unsubscribe_url,
         }
         context.update(common_context)
-        context = Context(context)
         # Build message
         text_message = loader.get_template("marcus/emails/followup_comment.txt").render(context)
         html_message = loader.get_template("marcus/emails/followup_comment.html").render(context)
