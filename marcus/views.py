@@ -6,13 +6,13 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.core.paginator import Paginator, InvalidPage
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect
 from django.utils import translation
 from django.conf import settings
 
-from marcus import models, forms, antispam
+from marcus import models, forms
 from marcus.utils import get_object_or_404
 
 
@@ -145,7 +145,7 @@ def archive(request, year, month, language):
 
 def archive_short(request, year, language):
     args = [arg for arg in (year, language, ) if arg]
-    url = reverse('marcus-archive', args=args)
+    url = reverse('marcus:archive', args=args)
     return redirect(url)
 
 
@@ -166,7 +166,7 @@ def find_article(request, slug):
 
 
 def _process_new_comment(request, comment, language, check_login):
-    spam_status = antispam.conveyor.validate(request, comment=comment)
+    spam_status = 'unknown'  # TODO
     if spam_status == 'spam':
         comment.delete()
         return render(request, 'marcus/spam.html', {
@@ -185,7 +185,7 @@ def _process_new_comment(request, comment, language, check_login):
 def article_short(request, year, slug, language):
     obj = get_object_or_404(models.Article, published__year=year, slug=slug)
     args = [i for i in (year, obj.published.month, obj.published.day, slug, language) if i]
-    url = reverse('marcus-article', args=args)
+    url = reverse('marcus:article', args=args)
     return redirect(url)
 
 
@@ -254,7 +254,6 @@ def draft(request, pk, language):
 @require_POST
 def approve_comment(request, id):
     comment = get_object_or_404(models.Comment, pk=id)
-    antispam.conveyor.submit_ham(comment.spam_status, comment=comment)
     comment.approved = timezone.now()
     comment.save()
     return redirect(spam_queue)
@@ -264,7 +263,6 @@ def approve_comment(request, id):
 @require_POST
 def spam_comment(request, id):
     comment = get_object_or_404(models.Comment, pk=id)
-    antispam.conveyor.submit_spam(comment=comment)
     comment.delete()
     return redirect(comment.article)
 

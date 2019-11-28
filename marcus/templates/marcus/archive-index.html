@@ -10,7 +10,7 @@
             <h3>{{ year.grouper }}</h3>
             <ul>
                 {% for item in year.list %}
-                    <li><a href="{% iurl 'marcus-archive' item.year item.month %}">{{ item|date:"F" }}</a></li>
+                    <li><a href="{% iurl 'marcus:archive' item.year item.month %}">{{ item|date:"F" }}</a></li>
                 {% endfor %}
             </ul>
         {% endfor %}

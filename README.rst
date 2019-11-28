@@ -106,11 +106,20 @@ Add to ``settings.py``::
         'django.contrib.auth.backends.ModelBackend',
     )
     
-    TEMPLATE_CONTEXT_PROCESSORS = (
-        'django.contrib.auth.context_processors.auth',
-        'django.core.context_processors.request',
-        'marcus.context_processors.marcus_context',
-    )
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                    'marcus.context_processors.marcus_context',
+                ],
+            },
+        },
+    ]
 
     MEDIA_ROOT = os.path.join(STORAGE_ROOT, 'media')
     MEDIA_URL = '/media/'

@@ -3,7 +3,7 @@
 
 <a name="comment-form"></a>
 {% if form %}
-    <form action="{% iurl 'marcus-article' article.published.year article.published.month article.published.day article.slug %}#comment-form"
+    <form action="{% iurl 'marcus:article' article.published.year article.published.month article.published.day article.slug %}#comment-form"
           method="post" id="comment-form">
         <div class="comment-form-input">
             {% if request.user.is_authenticated %}

@@ -1,41 +1,40 @@
-from django.conf.urls import patterns, include, url
+from django.urls import include, path, re_path
 
 from marcus import views, feeds
 
 
-urlpatterns = patterns(
-    '',
-    url(r'^(?:(en|ru)/)?$', views.index, name='marcus-index'),
+urlpatterns = [
+    re_path('^(?:(en|ru)/)?$', views.index, name='index'),
 
-    url(r'^category/(?:(en|ru)/)?$', views.category_index, name='marcus-categories'),
-    url(r'^category/([A-Za-z0-9_-]+)/(?:(en|ru)/)?$', views.category, name='marcus-category'),
-    url(r'^tag/(?:(en|ru)/)?$', views.tag_index, name='marcus-tags'),
-    url(r'^tag/([A-Za-z0-9_-]+)/(?:(en|ru)/)?$', views.tag, name='marcus-tag'),
-    url(r'^archive/(?:(en|ru)/)?$', views.archive_index, name='marcus-archive-index'),
-    url(r'^archive/(\d{4})/(?:(\d{1,2})/)?(?:(en|ru)/)?$', views.archive, name='marcus-archive'),
-    url(r'^(\d{4})/(?:(en|ru)/)?$', views.archive_short, name="marcus-archive-short"),
+    re_path('^category/(?:(en|ru)/)?$', views.category_index, name='categories'),
+    re_path('^category/([A-Za-z0-9_-]+)/(?:(en|ru)/)?$', views.category, name='category'),
+    re_path('^tag/(?:(en|ru)/)?$', views.tag_index, name='tags'),
+    re_path('^tag/([A-Za-z0-9_-]+)/(?:(en|ru)/)?$', views.tag, name='tag'),
+    re_path('^archive/(?:(en|ru)/)?$', views.archive_index, name='archive-index'),
+    re_path('^archive/(\d{4})/(?:(\d{1,2})/)?(?:(en|ru)/)?$', views.archive, name='archive'),
+    re_path('^(\d{4})/(?:(en|ru)/)?$', views.archive_short, name='archive-short'),
 
-    url(r'^suspected/$', views.spam_queue, name='marcus-spam-queue'),
-    url(r'^suspected/approve/(\d+)/$', views.approve_comment, name='marcus-approve-comment'),
-    url(r'^suspected/spam/(\d+)/$', views.spam_comment, name='marcus-spam-comment'),
-    url(r'^suspected/delete/$', views.delete_spam, name='marcus-delete-spam'),
+    path('suspected/', views.spam_queue, name='spam-queue'),
+    path('suspected/approve/(\d+)/', views.approve_comment, name='approve-comment'),
+    path('suspected/spam/(\d+)/', views.spam_comment, name='spam-comment'),
+    path('suspected/delete/', views.delete_spam, name='delete-spam'),
 
-    url(r'^feed/(?:(en|ru)/)?$', feeds.Article(), name='marcus-feed'),
-    url(r'^category/([A-Za-z0-9_-]+)/feed/(?:(en|ru)/)?$', feeds.Category(), name='marcus-category-feed'),
-    url(r'^tag/([A-Za-z0-9_-]+)/feed/(?:(en|ru)/)?$', feeds.Tag(), name='marcus-tag-feed'),
-    url(r'^comments/feed/(?:(en|ru)/)?$', feeds.Comment(), name='marcus-comments-feed'),
-    url(r'^(\d{4})/(\d{1,2})/(\d{1,2})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleComment(), name='marcus-article-comments-feed'),
-    url(r'^(\d{4})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleCommentShort(), name="marcus-article-comments-feed-short"),
-    url(r'^comments/unsubscribe/(\d+)/(\w+)/(?:(en|ru)/)?$', views.article_comments_unsubscribe, name="marcus-article-comments-unsubscribe"),
-    url(r'^comment_preview/$', views.comment_preview, name='marcus-comment-preview'),
+    re_path('^feed/(?:(en|ru)/)?$', feeds.Article(), name='feed'),
+    re_path('^category/([A-Za-z0-9_-]+)/feed/(?:(en|ru)/)?$', feeds.Category(), name='category-feed'),
+    re_path('^tag/([A-Za-z0-9_-]+)/feed/(?:(en|ru)/)?$', feeds.Tag(), name='tag-feed'),
+    re_path('^comments/feed/(?:(en|ru)/)?$', feeds.Comment(), name='comments-feed'),
+    re_path('^(\d{4})/(\d{1,2})/(\d{1,2})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleComment(), name='article-comments-feed'),
+    re_path('^(\d{4})/([^/]+)/feed/(?:(en|ru)/)?$', feeds.ArticleCommentShort(), name='article-comments-feed-short'),
+    re_path('^comments/unsubscribe/(\d+)/(\w+)/(?:(en|ru)/)?$', views.article_comments_unsubscribe, name='article-comments-unsubscribe'),
+    path('comment_preview/', views.comment_preview, name='comment-preview'),
 
-    url(r'^(\d{4})/(\d{1,2})/(\d{1,2})/([^/]+)/(?:(en|ru)/)?$', views.article, name='marcus-article'),
-    url(r'^(\d{4})/([^/]+)/(?:(en|ru)/)?$', views.article_short, name='marcus-article-short'),
-    url(r'^draft/(\d+)/(?:(en|ru)/)?$', views.draft, name='marcus-draft'),
+    re_path('^(\d{4})/(\d{1,2})/(\d{1,2})/([^/]+)/(?:(en|ru)/)?$', views.article, name='article'),
+    re_path('^(\d{4})/([^/]+)/(?:(en|ru)/)?$', views.article_short, name='article-short'),
+    re_path('^draft/(\d+)/(?:(en|ru)/)?$', views.draft, name='draft'),
 
-    url(r'^search/(?:(en|ru)/)?$', views.search, name="marcus-search"),
-    url(r'^([^/]+)/$', views.find_article, name='marcus-find-article'),
+    re_path('^search/(?:(en|ru)/)?$', views.search, name='search'),
+    re_path('^([^/]+)/', views.find_article, name='find-article'),
 
-    url(r'^articleuploadimage/preview/(\d+)/$', views.article_upload_image_preview, name="article-upload-image-preview"),
-    url(r'^sitemap', include('marcus.sitemap_urls')),
-)
+    re_path('^articleuploadimage/preview/(\d+)/', views.article_upload_image_preview, name='article-upload-image-preview'),
+    path('sitemap', include(('marcus.sitemap_urls', 'sitemap'))),
+]

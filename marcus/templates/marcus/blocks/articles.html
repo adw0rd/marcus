@@ -6,7 +6,7 @@
                 {{ article.published.date|localize }}
             </td>
             <td class="article-title">
-                <a href="{% iurl 'marcus-article' article.published.year article.published.month article.published.day article.slug %}">{{ article.title }}</a>
+                <a href="{% iurl 'marcus:article' article.published.year article.published.month article.published.day article.slug %}">{{ article.title }}</a>
             </td>
         </tr>
         {% if forloop.first and forloop.parentloop.first %}
@@ -16,7 +16,7 @@
                         {{ article.intro }}
                     </div>
                     <tt class="more">
-                        <a href="{% iurl 'marcus-article' article.published.year article.published.month article.published.day article.slug %}#more">
+                        <a href="{% iurl 'marcus:article' article.published.year article.published.month article.published.day article.slug %}#more">
                             {% trans "Read the article" %} →
                         </a>
                     </tt>

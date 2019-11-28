@@ -5,7 +5,7 @@ import urllib.error
 import urllib.parse
 import html2text
 
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.urls import reverse, NoReverseMatch
 from django.conf import settings
 
 from marcus.wordpress_importer import BasePipeline
@@ -124,7 +124,7 @@ class ChangeUrlToArticleForImagePipeline(BasePipeline):
             urls = re.findall('href\=\"(.+?\/{slug}\/)\"'.format(slug=slug), content) or []
             for url in urls:
                 try:
-                    new_url = reverse('marcus-article', args=[pub_date.year, pub_date.month, pub_date.day, slug])
+                    new_url = reverse('marcus:article', args=[pub_date.year, pub_date.month, pub_date.day, slug])
                     content = content.replace(url, new_url)
                 except NoReverseMatch:
                     pass

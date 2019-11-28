@@ -1,8 +1,6 @@
-# coding: utf-8
 from django import template
 from django.utils import formats
 from django.contrib.humanize.templatetags import humanize
-from django.utils.encoding import force_unicode
 
 register = template.Library()
 
@@ -10,7 +8,7 @@ register = template.Library()
 def get_formatted(value, formater):
     if value:
         naturalday = humanize.naturalday(value)
-        localize = force_unicode(formats.localize(value, use_l10n=True))
+        localize = formats.localize(value, use_l10n=True)
         if formater:
             dtm = formater.format(localize=localize, naturalday=naturalday)
         else:

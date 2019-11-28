@@ -4,7 +4,7 @@ import re
 from django.http import Http404
 from django.conf import settings
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.template import loader, Context
 from django.shortcuts import get_object_or_404 as goo404
 from django.core.mail import EmailMultiAlternatives
@@ -123,7 +123,7 @@ def notify_comment_followers(target_comment):
             continue
         # Build context
         unsubscribe_url = reverse(
-            "marcus-article-comments-unsubscribe",
+            "marcus:article-comments-unsubscribe",
             args=[target_comment.article_id, comment.make_token(), common_context['language']]
         )
         context = {

@@ -6,7 +6,7 @@ import itertools
 
 from django.db import models
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.utils.safestring import mark_safe
@@ -35,7 +35,7 @@ class Translation(object):
     def __dir__(self):
         return dir(self.obj)
 
-    def __unicode__(self):
+    def __str__(self):
         """For drawing sequence
 
         Example:
@@ -54,7 +54,7 @@ class Category(models.Model):
     title_en = models.CharField(max_length=255, blank=True)
     description_en = models.TextField(blank=True)
     count_articles_en = models.PositiveIntegerField(default=0)
-    parent = models.ForeignKey('self', null=True, blank=True)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
     essential = models.BooleanField(default=False, db_index=True)
 
     objects = managers.CategoryManager()
@@ -63,7 +63,7 @@ class Category(models.Model):
         verbose_name = 'category'
         verbose_name_plural = 'categories'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title()
 
     def save(self, *args, **kwargs):
@@ -86,7 +86,7 @@ class Category(models.Model):
     description.needs_language = True
 
     def get_absolute_url(self, language=None):
-        return utils.iurl(reverse('marcus-category', args=[self.slug]), language)
+        return utils.iurl(reverse('marcus:category', args=[self.slug]), language)
     get_absolute_url.needs_language = True
 
     def get_feed_url(self, language=None):
@@ -113,7 +113,7 @@ class Tag(models.Model):
 
     objects = managers.TagManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title()
 
     def save(self, *args, **kwargs):
@@ -129,7 +129,7 @@ class Tag(models.Model):
         return self.save_base(*args, **kwargs)
 
     def get_absolute_url(self, language=None):
-        return utils.iurl(reverse('marcus-tag', args=[self.slug]), language)
+        return utils.iurl(reverse('marcus:tag', args=[self.slug]), language)
     get_absolute_url.needs_language = True
 
     def title(self, language=None):
@@ -178,7 +178,7 @@ class Article(models.Model):
     objects = models.Manager()
     public = managers.PublicArticlesManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.slug
 
     def save(self, **kwargs):
@@ -199,14 +199,14 @@ class Article(models.Model):
 
     def get_absolute_url(self, language=None):
         if self.published:
-            url = reverse('marcus-article', args=[
+            url = reverse('marcus:article', args=[
                 '%04d' % self.published.year,
                 '%02d' % self.published.month,
                 '%02d' % self.published.day,
                 self.slug
             ])
         else:
-            url = reverse('marcus-draft', args=[self.pk])
+            url = reverse('marcus:draft', args=[self.pk])
         return utils.iurl(url, language)
     get_absolute_url.needs_language = True
 
@@ -287,19 +287,19 @@ LANGUAGES = (
 
 
 class ArticleUpload(models.Model):
-    article = models.ForeignKey(Article, related_name="uploads")
+    article = models.ForeignKey(Article, related_name="uploads", on_delete=models.CASCADE)
     upload = models.FileField(upload_to="uploads")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.upload.name
 
 
 class Comment(models.Model):
-    article = models.ForeignKey(Article, related_name='comments')
+    article = models.ForeignKey(Article, related_name='comments', on_delete=models.CASCADE)
     type = models.CharField(max_length=20, choices=COMMENT_TYPES)
     text = models.TextField(_('Text'))
     language = models.CharField(_('Language'), max_length=2, choices=LANGUAGES)
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     guest_name = models.CharField(max_length=255, blank=True)
     guest_email = models.CharField(max_length=200, blank=True, default='')
     guest_url = models.URLField(blank=True)
@@ -321,7 +321,7 @@ class Comment(models.Model):
         secrets = list(map(str, [self.pk, self.guest_email, self.created, self.ip, salt]))
         return hashlib.md5(":".join(secrets)).hexdigest()
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s, %s, %s' % (self.created.strftime('%Y-%m-%d'), self.article, self.author_str())
 
     def get_absolute_url(self, language=None):
