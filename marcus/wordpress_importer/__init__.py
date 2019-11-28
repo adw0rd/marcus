@@ -1,4 +1,4 @@
-class BasePipeline(object):
+class BasePipeline:
     replaced_data = {}
 
     def __init__(self, data):

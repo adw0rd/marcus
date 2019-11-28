@@ -63,6 +63,7 @@ Add to ``settings.py``::
 
     import os
     import imp
+    from django.utils.translation import ugettext_lazy as _
     
     PROJECT_ROOT = os.path.dirname(__file__)
     PROJECT_NAME = os.path.basename(PROJECT_ROOT)
@@ -86,7 +87,6 @@ Add to ``settings.py``::
     MARCUS_TAG_MINIMUM_ARTICLES = 0
     
     # Specify blog names:
-    from django.utils.translation import ugettext_lazy as _
     MARCUS_TITLE = _('Blog')
     MARCUS_SUBTITLE = _('Sample blog')
     
@@ -143,26 +143,24 @@ Add to ``settings.py``::
 
 Add to ``urls.py``::
 
-    from django.conf.urls import patterns, include, url
+    from django.urls import include, path
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
     from django.contrib import admin
     
     admin.autodiscover()
     
-    urlpatterns = patterns('',
-        url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-        url(r'^admin/', include(admin.site.urls)),
-        url(r'^', include('marcus.urls')),
-    )
-    
-    urlpatterns += staticfiles_urlpatterns()
+    urlpatterns = [
+        path('admin/doc/', include('django.contrib.admindocs.urls')),
+        path('admin/', admin.site.urls),
+        path('', include(('marcus.urls', 'marcus')), namespace='marcus'),
+    ]
 
+    urlpatterns += staticfiles_urlpatterns()
 
 
 And run so::
 
     python ./manage.py runserver 8000
-
 
 
 Wordpress importer settings:
@@ -200,9 +198,9 @@ Installation guide for new projects:
 
     django-admin.py startproject project
     cd project
-    pip install --process-dependency-links django-marcus  # use "--process-dependency-links" for pip>=1.5
-    ... Copy the settings to settings.py and you urls to you urls.py described above ...
-    python ./manage.py syncdb
+    pip install django-marcus
+    # Copy the settings to settings.py and you urls to you urls.py described above
+    python ./manage.py migrate
     python ./manage.py createsuperuser
     python ./manage.py runserver 8000
 

@@ -3,7 +3,7 @@ from django.db.utils import DatabaseError
 from marcus import models
 
 
-class ArticleTextSizeAdminMixin(object):
+class ArticleTextSizeAdminMixin:
     max_text_sizes = models.Article.objects\
         .extra(select={'text_length': 'if(char_length(text_ru)>char_length(text_en),char_length(text_ru),char_length(text_en))'})\
         .order_by('-text_length')\

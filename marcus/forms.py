@@ -27,7 +27,7 @@ class CommentForm(forms.Form):
 
     def __init__(self, user=None, ip=None, article=None, language=None, *args, **kwargs):
         super(CommentForm, self).__init__(*args, **kwargs)
-        if user and not user.is_authenticated():
+        if user and not user.is_authenticated:
             user = User.objects.get(username='marcus_guest')
         self.user = user
         self.ip = ip

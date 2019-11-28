@@ -72,7 +72,7 @@ class ContentFeed(views.Feed):
         return super(ContentFeed, self).__call__(request, *args, **kwargs)
 
 
-class ArticleFeed(object):
+class ArticleFeed:
     title_template = 'marcus/feeds/article_title.html'
     description_template = 'marcus/feeds/article_summary.html'
     content_template = 'marcus/feeds/article_content.html'
@@ -145,7 +145,7 @@ class Tag(ArticleFeed, ContentFeed):
         return models.Article.public.language(language).filter(tags=tag)
 
 
-class CommentFeed(object):
+class CommentFeed:
     title_template = 'marcus/feeds/comment_title.html'
     description_template = 'marcus/feeds/comment_summary.html'
     content_template = 'marcus/feeds/comment_content.html'

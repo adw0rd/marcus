@@ -32,7 +32,7 @@ def object_list(request, queryset, template_name, context):
 
 def superuser_required(func):
     def wrapper(request, *args, **kwargs):
-        if not request.user.is_authenticated() or not request.user.is_superuser:
+        if not request.user.is_authenticated or not request.user.is_superuser:
             return http.HttpResponseForbidden('Superuser required', content_type='text/plain')
         return func(request, *args, **kwargs)
     return wrapper

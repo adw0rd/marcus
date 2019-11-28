@@ -20,7 +20,8 @@ from marcus import utils
 from marcus import managers
 
 
-class Translation(object):
+class Translation:
+
     def __init__(self, obj, language):
         super(Translation, self).__init__()
         self.obj = obj
