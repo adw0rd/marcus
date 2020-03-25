@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 
-from marcus import models, actions, widgets, mixins
+from marcus import models, actions, widgets
 
 
 class TimedBooleanFilter(admin.FieldListFilter):
@@ -63,10 +63,10 @@ class ArticleForm(forms.ModelForm):
         return cleaned_data
 
 
-class ArticleAdmin(mixins.ArticleTextSizeAdminMixin, admin.ModelAdmin):
+class ArticleAdmin(admin.ModelAdmin):
     form = ArticleForm
     save_on_top = True
-    list_display = ('slug', 'title', 'text_size', 'is_published', )
+    list_display = ('slug', 'title', 'is_published', 'published')
     list_filter = (('published', TimedBooleanFilter), )
     search_fields = ('slug', 'title_ru', 'title_en', 'text_ru', 'text_en', 'categories__slug', 'categories__title_ru', 'categories__title_en', )
     ordering = ('-published', )
