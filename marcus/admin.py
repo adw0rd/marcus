@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib import admin
 
+from martor.widgets import AdminMartorWidget
+
 from marcus import models, actions, widgets
 
 
@@ -37,9 +39,9 @@ class ArticleForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'title_ru': forms.TextInput(attrs={'size': 80}),
-            'text_ru': forms.Textarea(attrs={'cols': 80, 'rows': 30}),
+            'text_ru': AdminMartorWidget(),
             'title_en': forms.TextInput(attrs={'size': 80}),
-            'text_en': forms.Textarea(attrs={'cols': 80, 'rows': 30}),
+            'text_en': AdminMartorWidget(),
         }
 
     def clean(self):

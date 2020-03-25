@@ -5,3 +5,4 @@ Pillow==6.2.1
 markdown2==2.3.8
 # wordpress_importer command required:
 html2text==2019.9.26
+martor==1.4.7

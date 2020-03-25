@@ -69,7 +69,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.flatpages',
-    'marcus'
+    'marcus',
+    'martor',
 )
 
 MARCUS_WORDPRESS_IMPORTER = {

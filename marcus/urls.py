@@ -37,4 +37,5 @@ urlpatterns = [
 
     re_path('^articleuploadimage/preview/(\d+)/', views.article_upload_image_preview, name='article-upload-image-preview'),
     path('sitemap', include(('marcus.sitemap_urls', 'sitemap'))),
+    path('martor/', include('martor.urls')),
 ]
