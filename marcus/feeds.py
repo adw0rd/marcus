@@ -156,9 +156,7 @@ class CommentFeed:
 
     def items(self, item):
         obj, language = item
-        qs = self.get_queryset(obj, language).select_related(
-            'author', 'article', 'article__author'
-        )[:settings.MARCUS_ITEMS_IN_FEED]
+        qs = self.get_queryset(obj, language)[:settings.MARCUS_ITEMS_IN_FEED]
         return [models.Translation(c, language) for c in qs]
 
     def item_pubdate(self, comment):
