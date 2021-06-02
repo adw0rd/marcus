@@ -2,7 +2,7 @@ Django==2.2.7
 pytils==0.3
 pytz==2019.3
 Pillow==6.2.1
-markdown2==2.3.8
+markdown2==2.4.0
 # wordpress_importer command required:
 html2text==2019.9.26
 martor==1.4.7
