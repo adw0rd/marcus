@@ -1,4 +1,4 @@
-Django==2.2.7
+Django==2.2.24
 pytils==0.3
 pytz==2019.3
 Pillow==6.2.1
